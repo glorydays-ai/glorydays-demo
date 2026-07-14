@@ -4592,110 +4592,122 @@
       <div class="section-title">Video Archive</div>
 
       <style>
-        .gd-video-card { background:#0d1117; border:1px solid #C8102E; border-radius:14px; overflow:hidden; margin-bottom:24px; }
-        .gd-video-poster { position:relative; height:210px; overflow:hidden; cursor:pointer; background:#0d1117; }
-        .gd-video-poster-inner { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;
-          background: linear-gradient(160deg, #0d1117 0%, #1a0a0a 50%, #0d1117 100%); }
-        .gd-video-badge { font-size:0.65rem; font-weight:800; letter-spacing:2px; color:#F1BE48; text-transform:uppercase; opacity:0.85; }
-        .gd-video-title-lg { font-size:1.1rem; font-weight:800; color:#fff; text-align:center; padding:0 24px; line-height:1.3; }
-        .gd-video-subtitle { font-size:0.75rem; color:#94a3b8; text-align:center; }
-        .gd-play-btn { width:54px; height:54px; background:#C8102E; border-radius:50%; display:flex; align-items:center; justify-content:center;
-          box-shadow:0 0 0 5px rgba(200,16,46,0.18), 0 4px 20px rgba(200,16,46,0.35); transition:transform 0.15s, box-shadow 0.15s; margin-top:2px; }
-        .gd-video-poster:hover .gd-play-btn { transform:scale(1.1); box-shadow:0 0 0 10px rgba(200,16,46,0.22), 0 6px 32px rgba(200,16,46,0.5); }
-        .gd-play-btn svg { margin-left:5px; }
-        .gd-video-hint { font-size:0.68rem; color:#475569; letter-spacing:1px; text-transform:uppercase; margin-top:2px; }
-        .gd-video-iframe-wrap { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; }
-        .gd-video-iframe-wrap iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
-        .gd-callout { background:#0a1a0a; border-top:2px solid #22c55e; padding:10px 18px; display:flex; align-items:center; gap:10px; }
-        .gd-video-meta { padding:14px 18px; border-top:1px solid #1e2535; }
-        .gd-video-era { font-size:0.72rem; font-weight:700; letter-spacing:1.5px; color:#F1BE48; margin-bottom:4px; }
-        .gd-video-name { font-size:1rem; font-weight:700; color:#e2e8f0; }
+        /* YouTube-style video grid */
+        .isu-video-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:24px; }
+        @media(max-width:700px){ .isu-video-grid { grid-template-columns:repeat(2,1fr); gap:10px; } }
+        @media(max-width:440px){ .isu-video-grid { grid-template-columns:1fr; } }
+        .isu-vcard { background:#0d1117; border:1px solid #1e2535; border-radius:10px; overflow:hidden; cursor:pointer; transition:border-color 0.15s, transform 0.15s; }
+        .isu-vcard:hover { border-color:#C8102E; transform:translateY(-2px); }
+        .isu-vcard.playing { border-color:#C8102E; }
+        .isu-thumb-wrap { position:relative; width:100%; padding-bottom:56.25%; background:#0a0a0a; overflow:hidden; }
+        .isu-thumb-wrap img { position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; display:block; }
+        .isu-thumb-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.35); display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.15s; }
+        .isu-vcard:hover .isu-thumb-overlay { opacity:1; }
+        .isu-play-circle { width:44px; height:44px; background:rgba(200,16,46,0.92); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 16px rgba(200,16,46,0.5); }
+        .isu-play-circle svg { margin-left:4px; }
+        .isu-badge-pill { position:absolute; top:7px; left:7px; background:rgba(0,0,0,0.72); border-radius:4px; padding:2px 7px; font-size:0.6rem; font-weight:800; letter-spacing:1px; color:#F1BE48; text-transform:uppercase; }
+        .isu-upset-pill { position:absolute; top:7px; right:7px; background:rgba(34,197,94,0.85); border-radius:4px; padding:2px 7px; font-size:0.6rem; font-weight:800; letter-spacing:1px; color:#fff; text-transform:uppercase; }
+        .isu-vcard-meta { padding:9px 11px 11px; }
+        .isu-vcard-title { font-size:0.88rem; font-weight:700; color:#e2e8f0; line-height:1.3; margin-bottom:4px; }
+        .isu-vcard-sub { font-size:0.7rem; color:#64748b; }
+        /* Inline player row — spans full width below grid */
+        .isu-player-row { display:none; margin-bottom:20px; border-radius:12px; overflow:hidden; border:1px solid #C8102E; background:#000; }
+        .isu-player-row.active { display:block; }
+        .isu-player-iframe-wrap { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; }
+        .isu-player-iframe-wrap iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
+        .isu-player-info { padding:10px 16px; background:#0d1117; border-top:1px solid #1e2535; display:flex; align-items:center; gap:10px; }
+        .isu-player-title { font-size:0.95rem; font-weight:700; color:#e2e8f0; }
+        .isu-player-era { font-size:0.7rem; font-weight:700; letter-spacing:1.5px; color:#F1BE48; }
+        .isu-player-close { margin-left:auto; background:none; border:1px solid #334155; color:#94a3b8; border-radius:6px; padding:4px 10px; font-size:0.75rem; cursor:pointer; }
+        .isu-player-close:hover { border-color:#C8102E; color:#fff; }
       </style>
       <script>
-        function playISUVideo(cardId, ytId) {
-          // Stop all other playing videos first
-          document.querySelectorAll('[id$="-player"]').forEach(function(p) {
-            if (p.id !== cardId + '-player' && p.innerHTML.trim() !== '') {
-              var pid = p.id.replace('-player','');
-              var poster = document.getElementById(pid + '-poster');
-              p.innerHTML = '';
-              p.style.display = 'none';
-              if (poster) poster.style.display = 'block';
-            }
-          });
-          var poster = document.getElementById(cardId + '-poster');
-          var player = document.getElementById(cardId + '-player');
-          poster.style.display = 'none';
-          player.innerHTML = '<div class="gd-video-iframe-wrap"><iframe src="https://www.youtube.com/embed/' + ytId + '?rel=0&modestbranding=1&autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
-          player.style.display = 'block';
+        function playISUGrid(ytId, title, era, badge) {
+          var row = document.getElementById('isu-player-row');
+          var wrap = document.getElementById('isu-player-wrap');
+          var ptitle = document.getElementById('isu-player-title');
+          var pera = document.getElementById('isu-player-era');
+          // Highlight active card
+          document.querySelectorAll('.isu-vcard').forEach(function(c){ c.classList.remove('playing'); });
+          var card = document.getElementById('isuvc-' + ytId);
+          if(card) card.classList.add('playing');
+          // Load player
+          wrap.innerHTML = '<div class="isu-player-iframe-wrap"><iframe src="https://www.youtube.com/embed/' + ytId + '?rel=0&modestbranding=1&autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
+          ptitle.textContent = title;
+          pera.textContent = era;
+          row.classList.add('active');
+          row.scrollIntoView({behavior:'smooth', block:'nearest'});
+        }
+        function closeISUPlayer() {
+          var row = document.getElementById('isu-player-row');
+          var wrap = document.getElementById('isu-player-wrap');
+          wrap.innerHTML = '';
+          row.classList.remove('active');
+          document.querySelectorAll('.isu-vcard').forEach(function(c){ c.classList.remove('playing'); });
         }
       </script>
 
-      <!-- FEATURED VIDEO 1 — Iowa State vs Iowa 1990 -->
-      <div class="gd-video-card">
-        <div id="v1-poster" class="gd-video-poster" onclick="playISUVideo('v1','if3RwVDqV4I')">
-          <div class="gd-video-poster-inner">
-            <div class="gd-video-badge">Iowa State Cyclones · Football · 1990</div>
-            <div class="gd-video-title-lg">Iowa State vs Iowa</div>
-            <div class="gd-video-subtitle">1990 Football Season</div>
-            <div class="gd-play-btn">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
-            </div>
-            <div class="gd-video-hint">Click to play</div>
-          </div>
-        </div>
-        <div id="v1-player" style="display:none;"></div>
-        <div class="gd-video-meta">
-          <div class="gd-video-era">IOWA STATE CYCLONES · FOOTBALL · 1990 — THIS IS ME</div>
-          <div class="gd-video-name">Iowa State vs Iowa — 1990 Football Season</div>
-        </div>
-      </div>
+      <!-- VIDEO GRID -->
+      <div class="isu-video-grid">
 
-      <!-- FEATURED VIDEO 2 — Iowa State vs Oklahoma 1991 -->
-      <div class="gd-video-card">
-        <div id="v2-poster" class="gd-video-poster" onclick="playISUVideo('v2','u81UIjcS62A')">
-          <div class="gd-video-poster-inner">
-            <div class="gd-video-badge">Iowa State Cyclones · Football · 1991</div>
-            <div class="gd-video-title-lg">Iowa State vs #1 Oklahoma</div>
-            <div class="gd-video-subtitle">The Upset — Staff-filmed · Never broadcast</div>
-            <div class="gd-play-btn">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+        <!-- Card 1 — Iowa State vs Iowa 1990 -->
+        <div class="isu-vcard" id="isuvc-if3RwVDqV4I" onclick="playISUGrid('if3RwVDqV4I','Iowa State vs Iowa — 1990 Football Season','IOWA STATE · FOOTBALL · 1990 — THIS IS ME','Football')">
+          <div class="isu-thumb-wrap">
+            <img src="https://img.youtube.com/vi/if3RwVDqV4I/hqdefault.jpg" alt="Iowa State vs Iowa 1990" onerror="this.style.background='#1a0a0a';this.style.display='none';" />
+            <div class="isu-badge-pill">Football · 1990</div>
+            <div class="isu-thumb-overlay">
+              <div class="isu-play-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
             </div>
-            <div class="gd-video-hint">Click to play</div>
+          </div>
+          <div class="isu-vcard-meta">
+            <div class="isu-vcard-title">Iowa State vs Iowa</div>
+            <div class="isu-vcard-sub">1990 Football Season · This Is Me</div>
           </div>
         </div>
-        <div id="v2-player" style="display:none;"></div>
-        <div class="gd-callout">
-          <span style="font-size:1.2rem;">🏆</span>
-          <span style="font-size:0.82rem;color:#22c55e;font-weight:700;">THE UPSET — Iowa State defeats #1 Oklahoma. Staff-filmed. Never broadcast.</span>
-        </div>
-        <div class="gd-video-meta">
-          <div class="gd-video-era">IOWA STATE CYCLONES · FOOTBALL · 1991 — THIS IS ME</div>
-          <div class="gd-video-name">Iowa State 1991 Win vs Oklahoma</div>
-        </div>
-      </div>
 
-      <!-- FEATURED VIDEO 3 — Iowa State vs Nebraska 1992 -->
-      <div class="gd-video-card">
-        <div id="v3-poster" class="gd-video-poster" onclick="playISUVideo('v3','Cttbgajsbkw')">
-          <div class="gd-video-poster-inner">
-            <div class="gd-video-badge">Iowa State Cyclones · Football · 1992</div>
-            <div class="gd-video-title-lg">Iowa State vs Nebraska</div>
-            <div class="gd-video-subtitle">Head Coach Jim Walden · Staff-filmed · Never broadcast</div>
-            <div class="gd-play-btn">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+        <!-- Card 2 — Iowa State vs #1 Oklahoma 1991 -->
+        <div class="isu-vcard" id="isuvc-u81UIjcS62A" onclick="playISUGrid('u81UIjcS62A','Iowa State defeats #1 Oklahoma — The Upset','IOWA STATE · FOOTBALL · 1991 — THIS IS ME','Football')">
+          <div class="isu-thumb-wrap">
+            <img src="https://img.youtube.com/vi/u81UIjcS62A/hqdefault.jpg" alt="Iowa State vs Oklahoma 1991" onerror="this.style.display='none';" />
+            <div class="isu-badge-pill">Football · 1991</div>
+            <div class="isu-upset-pill">🏆 The Upset</div>
+            <div class="isu-thumb-overlay">
+              <div class="isu-play-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
             </div>
-            <div class="gd-video-hint">Click to play</div>
+          </div>
+          <div class="isu-vcard-meta">
+            <div class="isu-vcard-title">Iowa State vs #1 Oklahoma</div>
+            <div class="isu-vcard-sub">1991 · Staff-filmed · Never broadcast</div>
           </div>
         </div>
-        <div id="v3-player" style="display:none;"></div>
-        <div class="gd-callout">
-          <span style="font-size:1.2rem;">🏆</span>
-          <span style="font-size:0.82rem;color:#22c55e;font-weight:700;">THE UPSET — Iowa State defeats Nebraska. Head coach Jim Walden. Jimmy Burrow (Joe Burrow's father) on the sideline as assistant. Staff-filmed. Never broadcast.</span>
+
+        <!-- Card 3 — Iowa State vs Nebraska 1992 -->
+        <div class="isu-vcard" id="isuvc-Cttbgajsbkw" onclick="playISUGrid('Cttbgajsbkw','Iowa State defeats Nebraska — Jim Walden HC','IOWA STATE · FOOTBALL · 1992 — THIS IS ME','Football')">
+          <div class="isu-thumb-wrap">
+            <img src="https://img.youtube.com/vi/Cttbgajsbkw/hqdefault.jpg" alt="Iowa State vs Nebraska 1992" onerror="this.style.display='none';" />
+            <div class="isu-badge-pill">Football · 1992</div>
+            <div class="isu-upset-pill">🏆 The Upset</div>
+            <div class="isu-thumb-overlay">
+              <div class="isu-play-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            </div>
+          </div>
+          <div class="isu-vcard-meta">
+            <div class="isu-vcard-title">Iowa State vs Nebraska</div>
+            <div class="isu-vcard-sub">1992 · Jim Walden HC · Jimmy Burrow on sideline</div>
+          </div>
         </div>
-        <div style="padding:14px 18px;border-top:1px solid #1e2535;">
-          <div style="font-size:0.72rem;font-weight:700;letter-spacing:1.5px;color:#F1BE48;margin-bottom:4px;">IOWA STATE CYCLONES · FOOTBALL · 1992 — THIS IS ME</div>
-          <div style="font-size:1rem;font-weight:700;color:#e2e8f0;">Iowa State 1992 Win vs Nebraska</div>
+
+      </div><!-- /isu-video-grid -->
+
+      <!-- Inline player — appears below grid when a card is clicked -->
+      <div class="isu-player-row" id="isu-player-row">
+        <div id="isu-player-wrap"></div>
+        <div class="isu-player-info">
+          <div>
+            <div class="isu-player-era" id="isu-player-era"></div>
+            <div class="isu-player-title" id="isu-player-title"></div>
+          </div>
+          <button class="isu-player-close" onclick="closeISUPlayer()">✕ Close</button>
         </div>
       </div>
 
