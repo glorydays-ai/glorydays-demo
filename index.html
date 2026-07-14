@@ -163,19 +163,24 @@
     .f-chip:hover { color:#fff; border-color:#5a6070; }
     .f-chip.active { color:#fff; font-weight:700; }
     .search-results-count { font-size:0.82rem; color:#9aa3b0; margin-top:12px; }
-    /* VIDEO ARCHIVE CARDS */
-    .archive-grid { display:flex; flex-direction:column; gap:12px; margin-top:8px; }
-    .archive-card { background:#131923; border:1px solid #1e2535; border-radius:12px; padding:16px 20px; display:flex; align-items:center; gap:16px; cursor:pointer; transition:border-color 0.2s,transform 0.15s; }
-    .archive-card:hover { transform:translateX(4px); }
-    .archive-thumb { width:80px; height:56px; border-radius:8px; background:#0d1117; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0; position:relative; overflow:hidden; }
-    .archive-play { position:absolute; inset:0; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; font-size:1rem; opacity:0; transition:opacity 0.2s; }
+    /* VIDEO ARCHIVE CARDS — YouTube-style grid */
+    .archive-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:8px; margin-bottom:24px; }
+    @media(max-width:720px){ .archive-grid { grid-template-columns:repeat(2,1fr); gap:10px; } }
+    @media(max-width:440px){ .archive-grid { grid-template-columns:1fr; } }
+    .archive-card { background:#131923; border:1px solid #1e2535; border-radius:10px; padding:0; display:flex; flex-direction:column; cursor:pointer; transition:border-color 0.2s,transform 0.15s; overflow:hidden; }
+    .archive-card:hover { transform:translateY(-2px); border-color:var(--primary,#d4a855); }
+    .archive-thumb { width:100%; aspect-ratio:16/9; height:auto; border-radius:0; background:#0d1117; display:flex; align-items:center; justify-content:center; font-size:2.2rem; flex-shrink:0; position:relative; overflow:hidden; }
+    .archive-thumb img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+    .archive-play { position:absolute; inset:0; background:rgba(0,0,0,0.38); display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.2s; }
+    .archive-play-circle { width:40px; height:40px; background:rgba(212,168,85,0.9); border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .archive-play-circle svg { margin-left:3px; }
     .archive-card:hover .archive-play { opacity:1; }
-    .archive-info { flex:1; min-width:0; }
-    .archive-meta { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:5px; }
-    .archive-tag { font-size:0.7rem; font-weight:700; letter-spacing:1px; padding:2px 8px; border-radius:4px; }
-    .archive-title { font-size:0.95rem; font-weight:700; margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .archive-sub { font-size:0.78rem; color:#9aa3b0; }
-    .archive-duration { font-size:0.78rem; color:#9aa3b0; flex-shrink:0; font-weight:600; }
+    .archive-info { min-width:0; padding:9px 11px 6px; }
+    .archive-meta { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:5px; }
+    .archive-tag { font-size:0.62rem; font-weight:700; letter-spacing:1px; padding:2px 7px; border-radius:4px; }
+    .archive-title { font-size:0.85rem; font-weight:700; margin-bottom:3px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; line-height:1.3; }
+    .archive-sub { font-size:0.7rem; color:#9aa3b0; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden; }
+    .archive-duration { font-size:0.7rem; color:#9aa3b0; font-weight:600; }
     .no-results { text-align:center; padding:40px 20px; color:#9aa3b0; font-size:0.95rem; }
 
     /* DEV NOTE */
@@ -188,7 +193,7 @@
     .footer-text { color:#9aa3b0; font-size:0.82rem; margin-top:6px; }
     .copyright { color:#555; font-size:0.8rem; }
   
-      .archive-card-right { display:flex; flex-direction:column; align-items:flex-end; gap:10px; flex-shrink:0; }
+      .archive-card-right { display:flex; flex-direction:row; align-items:center; flex-wrap:wrap; gap:6px; padding:4px 11px 10px; }
       .locker-btn {
         display:flex; align-items:center; gap:6px;
         background:#1e2535; border:1px solid #2e3a50;
@@ -2961,7 +2966,7 @@
       <div class="archive-grid" id="sim-archive">
 
         <div class="archive-card" data-tags="football 2026 charlie walden 36 linebacker live frontier conference southern oregon">
-          <div class="archive-thumb" style="background:linear-gradient(135deg,#3a0000,#8B0000);">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:linear-gradient(135deg,#3a0000,#8B0000);">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#8B0000;color:#fff;">FOOTBALL</span>
@@ -2979,7 +2984,7 @@
         </div>
 
         <div class="archive-card" data-tags="football 2026 charlie walden 36 linebacker live frontier conference carroll college">
-          <div class="archive-thumb" style="background:linear-gradient(135deg,#3a0000,#8B0000);">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:linear-gradient(135deg,#3a0000,#8B0000);">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#8B0000;color:#fff;">FOOTBALL</span>
@@ -2997,7 +3002,7 @@
         </div>
 
         <div class="archive-card" data-tags="football 2026 charlie walden 36 highlights ai compiled season reel">
-          <div class="archive-thumb" style="background:linear-gradient(135deg,#1a0000,#500000);">🏅<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:linear-gradient(135deg,#1a0000,#500000);">🏅<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#8B0000;color:#fff;">HIGHLIGHTS</span>
@@ -3015,7 +3020,7 @@
         </div>
 
         <div class="archive-card" data-tags="football 2025 simpson red hawks archive frontier conference">
-          <div class="archive-thumb" style="background:linear-gradient(135deg,#200a0a,#3d1010);">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:linear-gradient(135deg,#200a0a,#3d1010);">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#8B0000;color:#fff;">FOOTBALL</span>
@@ -3829,7 +3834,7 @@
       <div class="archive-grid" id="uid-archive">
 
         <div class="archive-card" data-tags="soccer 2026 georgia whitehead 11 forward live big sky eastern washington idaho vandals">
-          <div class="archive-thumb" style="background:linear-gradient(135deg,#001a33,#003366);">⚽<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:linear-gradient(135deg,#001a33,#003366);">⚽<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#003366;color:#D4AF37;">SOCCER</span>
@@ -3847,7 +3852,7 @@
         </div>
 
         <div class="archive-card" data-tags="soccer 2026 georgia whitehead 11 forward big sky montana state live">
-          <div class="archive-thumb" style="background:linear-gradient(135deg,#001a33,#003366);">⚽<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:linear-gradient(135deg,#001a33,#003366);">⚽<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#003366;color:#D4AF37;">SOCCER</span>
@@ -3865,7 +3870,7 @@
         </div>
 
         <div class="archive-card" data-tags="soccer 2026 georgia whitehead highlights season reel ai compiled">
-          <div class="archive-thumb" style="background:linear-gradient(135deg,#0a1a2a,#001a33);">🏅<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:linear-gradient(135deg,#0a1a2a,#001a33);">🏅<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#003366;color:#D4AF37;">HIGHLIGHTS</span>
@@ -3883,7 +3888,7 @@
         </div>
 
         <div class="archive-card" data-tags="soccer 2025 idaho vandals archive big sky northern colorado">
-          <div class="archive-thumb" style="background:linear-gradient(135deg,#050d1a,#0d1f33);">⚽<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:linear-gradient(135deg,#050d1a,#0d1f33);">⚽<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#003366;color:#D4AF37;">SOCCER</span>
@@ -4079,7 +4084,7 @@
           </div>
           <div class="archive-grid" id="wsu-archive">
         <div class="archive-card" data-tags="football 1981 holiday bowl byu coach jim walden jack thompson">
-          <div class="archive-thumb" style="background:#200810;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#200810;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#981E32;color:#fff;">FOOTBALL</span>
@@ -4097,7 +4102,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="football 1997 rose bowl ucla ryan leaf coach mike price">
-          <div class="archive-thumb" style="background:#200810;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#200810;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#981E32;color:#fff;">FOOTBALL</span>
@@ -4115,7 +4120,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="football 2003 apple cup washington huskies coach bill doba">
-          <div class="archive-thumb" style="background:#200810;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#200810;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#981E32;color:#fff;">FOOTBALL</span>
@@ -4133,7 +4138,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="basketball 1994 pac-10 tournament coach kelvin sampson">
-          <div class="archive-thumb" style="background:#0d1520;">🏀<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0d1520;">🏀<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#5E6A71;color:#fff;">BASKETBALL</span>
@@ -4151,7 +4156,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="basketball 2007 women ncaa tournament coach kamie ethridge">
-          <div class="archive-thumb" style="background:#0d1520;">🏀<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0d1520;">🏀<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#5E6A71;color:#fff;">BASKETBALL</span>
@@ -4169,7 +4174,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="baseball 1988 conference championship coach bobo brayton">
-          <div class="archive-thumb" style="background:#0d1a10;">⚾<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0d1a10;">⚾<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#2a4a2a;color:#5fa87e;">BASEBALL</span>
@@ -4727,7 +4732,7 @@
           </div>
           <div class="archive-grid" id="isu-archive">
         <div class="archive-card" data-tags="football 2000 big 12 championship coach dan mccarney">
-          <div class="archive-thumb" style="background:#200508;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#200508;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#C8102E;color:#fff;">FOOTBALL</span>
@@ -4745,7 +4750,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="basketball 1999 ncaa tournament coach tim floyd hilton magic">
-          <div class="archive-thumb" style="background:#1a0a04;">🏀<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#1a0a04;">🏀<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#C8102E;color:#fff;">BASKETBALL</span>
@@ -4763,7 +4768,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="wrestling 1987 big 8 championship coach jim gibbons">
-          <div class="archive-thumb" style="background:#1a1204;">🤼<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#1a1204;">🤼<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#7a6020;color:#F1BE48;">WRESTLING</span>
@@ -4781,7 +4786,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="football 2012 coach paul rhoads quarterback steele jantz">
-          <div class="archive-thumb" style="background:#200508;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#200508;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#C8102E;color:#fff;">FOOTBALL</span>
@@ -4799,7 +4804,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="volleyball 2010 big 12 coach christy johnson">
-          <div class="archive-thumb" style="background:#1a1204;">🏐<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#1a1204;">🏐<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#7a6020;color:#F1BE48;">VOLLEYBALL</span>
@@ -5076,7 +5081,7 @@
           </div>
           <div class="archive-grid" id="unl-archive">
         <div class="archive-card" data-tags="football 1994 national championship coach tom osborne quarterback tommie frazier">
-          <div class="archive-thumb" style="background:#1a0204;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#1a0204;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#E41C38;color:#fff;">FOOTBALL</span>
@@ -5094,7 +5099,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="football 1995 national championship coach tom osborne quarterback tommie frazier brook berringer">
-          <div class="archive-thumb" style="background:#1a0204;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#1a0204;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#E41C38;color:#fff;">FOOTBALL</span>
@@ -5112,7 +5117,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="volleyball 2006 ncaa championship coach john cook">
-          <div class="archive-thumb" style="background:#1a1204;">🏐<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#1a1204;">🏐<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#7a6020;color:#f0e6c8;">VOLLEYBALL</span>
@@ -5130,7 +5135,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="wrestling 1982 ncaa championship coach danny nunez">
-          <div class="archive-thumb" style="background:#1a1204;">🤼<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#1a1204;">🤼<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#2a3548;color:#f0e6c8;">WRESTLING</span>
@@ -5148,7 +5153,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="baseball 1996 college world series coach dave van horn">
-          <div class="archive-thumb" style="background:#0d1a10;">⚾<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0d1a10;">⚾<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#2a4a2a;color:#5fa87e;">BASEBALL</span>
@@ -5398,46 +5403,92 @@
       <!-- VIDEO ARCHIVE -->
       <div class="section-title">Video Archive</div>
 
-      <!-- FEATURED VIDEO — Pullman vs Selah 1985 -->
-      <div class="gd-video-card" style="border-color:#003087;">
-        <div id="phs1-poster" class="gd-video-poster" onclick="playISUVideo('phs1','gCjr2E67DuA?start=14')">
-          <div class="gd-video-poster-inner" style="background:linear-gradient(160deg,#0a0e1a 0%,#0d1a2e 50%,#0a0e1a 100%);">
-            <div class="gd-video-badge" style="color:#94A3B8;">Pullman High School · Football · 1985</div>
-            <div class="gd-video-title-lg">Pullman vs Selah</div>
-            <div class="gd-video-subtitle">1985 State Playoff Game</div>
-            <div class="gd-play-btn" style="background:#003087;box-shadow:0 0 0 6px rgba(0,48,135,0.18),0 4px 24px rgba(0,48,135,0.4);">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
-            </div>
-            <div class="gd-video-hint">Starts at 0:14 — watch for #12</div>
-          </div>
+      <!-- NAME ALERT BAR (non-members can sign up) -->
+      <div class="name-alert-bar" id="name-alert-bar">
+        <div class="nal-icon">🔔</div>
+        <div class="nal-text">
+          <strong>Get alerted when your name appears</strong>
+          <p>Enter your name and email — we'll notify you any time a video or roster mentioning you is added to GloryDays.</p>
         </div>
-        <div id="phs1-player" style="display:none;"></div>
-        <div class="gd-callout">
-          <span style="font-size:1.2rem;">⚡</span>
-          <span style="font-size:0.82rem;color:#22c55e;font-weight:700;">WATCH THE 0:14 MARK — #12 takes the handoff. That's Murray Walden.</span>
-        </div>
-        <div class="gd-video-meta">
-          <div class="gd-video-era" style="color:#94A3B8;">PULLMAN HIGH SCHOOL · FOOTBALL · 1985 — THIS IS ME</div>
-          <div class="gd-video-name">Pullman vs Selah — 1985 State Playoff Game</div>
+        <div class="nal-form">
+          <input class="nal-input" id="nal-name" type="text" placeholder="Your name" />
+          <input class="nal-input" id="nal-email" type="email" placeholder="Email address" />
+          <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
         </div>
       </div>
-      
-          <!-- NAME ALERT BAR (non-members can sign up) -->
-          <div class="name-alert-bar" id="name-alert-bar">
-            <div class="nal-icon">🔔</div>
-            <div class="nal-text">
-              <strong>Get alerted when your name appears</strong>
-              <p>Enter your name and email — we'll notify you any time a video or roster mentioning you is added to GloryDays.</p>
-            </div>
-            <div class="nal-form">
-              <input class="nal-input" id="nal-name" type="text" placeholder="Your name" />
-              <input class="nal-input" id="nal-email" type="email" placeholder="Email address" />
-              <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
+
+      <style>
+        .phs-yt-card { background:#131923; border:1px solid #003087; border-radius:10px; overflow:hidden; cursor:pointer; transition:border-color 0.15s,transform 0.15s; }
+        .phs-yt-card:hover { border-color:#4a7ad4; transform:translateY(-2px); }
+        .phs-yt-card.playing { border-color:#F5C518; }
+        .phs-yt-thumb { position:relative; width:100%; padding-bottom:56.25%; background:#000d1f; overflow:hidden; }
+        .phs-yt-thumb img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+        .phs-yt-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.35); display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.15s; }
+        .phs-yt-card:hover .phs-yt-overlay { opacity:1; }
+        .phs-play-circle { width:42px; height:42px; background:rgba(0,48,135,0.92); border-radius:50%; display:flex; align-items:center; justify-content:center; }
+        .phs-this-is-me { position:absolute; top:7px; left:7px; background:rgba(245,197,24,0.9); border-radius:4px; padding:2px 8px; font-size:0.6rem; font-weight:800; letter-spacing:1px; color:#0a0a0a; text-transform:uppercase; }
+        .phs-watch-pill { position:absolute; bottom:7px; left:7px; background:rgba(34,197,94,0.85); border-radius:4px; padding:2px 8px; font-size:0.6rem; font-weight:700; color:#fff; }
+        .phs-yt-meta { padding:9px 11px 11px; }
+        .phs-yt-title { font-size:0.88rem; font-weight:700; color:#e2e8f0; margin-bottom:3px; line-height:1.3; }
+        .phs-yt-sub { font-size:0.7rem; color:#64748b; }
+        .phs-player-row { display:none; margin-bottom:16px; border-radius:10px; overflow:hidden; border:1px solid #003087; background:#000; }
+        .phs-player-row.active { display:block; }
+        .phs-player-wrap { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; }
+        .phs-player-wrap iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
+        .phs-player-bar { padding:9px 14px; background:#0d1117; border-top:1px solid #1e2535; display:flex; align-items:center; gap:10px; }
+        .phs-player-close { margin-left:auto; background:none; border:1px solid #334155; color:#94a3b8; border-radius:6px; padding:4px 10px; font-size:0.75rem; cursor:pointer; }
+        .phs-player-close:hover { border-color:#003087; color:#fff; }
+      </style>
+      <script>
+        function playPHSVideo(ytId) {
+          var row = document.getElementById('phs-player-row');
+          var wrap = document.getElementById('phs-player-wrap');
+          document.querySelectorAll('.phs-yt-card').forEach(function(c){ c.classList.remove('playing'); });
+          document.getElementById('phsvc-' + ytId).classList.add('playing');
+          wrap.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytId + '?rel=0&modestbranding=1&autoplay=1&start=14" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+          row.classList.add('active');
+          row.scrollIntoView({behavior:'smooth', block:'nearest'});
+        }
+        function closePHSPlayer() {
+          var row = document.getElementById('phs-player-row');
+          document.getElementById('phs-player-wrap').innerHTML = '';
+          row.classList.remove('active');
+          document.querySelectorAll('.phs-yt-card').forEach(function(c){ c.classList.remove('playing'); });
+        }
+      </script>
+
+      <!-- Pullman vs Selah YouTube card — inline player -->
+      <div class="phs-player-row" id="phs-player-row">
+        <div class="phs-player-wrap" id="phs-player-wrap"></div>
+        <div class="phs-player-bar">
+          <div>
+            <div style="font-size:0.7rem;font-weight:700;letter-spacing:1.5px;color:#94A3B8;">PULLMAN HIGH SCHOOL · FOOTBALL · 1985 — THIS IS ME</div>
+            <div style="font-size:0.92rem;font-weight:700;color:#e2e8f0;">Pullman vs Selah — 1985 State Playoff · Watch 0:14 for #12</div>
+          </div>
+          <button class="phs-player-close" onclick="closePHSPlayer()">✕ Close</button>
+        </div>
+      </div>
+
+      <div class="archive-grid" id="phs-archive">
+
+        <!-- Featured YouTube card — Pullman vs Selah 1985 -->
+        <div class="phs-yt-card" id="phsvc-gCjr2E67DuA" onclick="playPHSVideo('gCjr2E67DuA')">
+          <div class="phs-yt-thumb">
+            <img src="https://img.youtube.com/vi/gCjr2E67DuA/hqdefault.jpg" alt="Pullman vs Selah 1985" onerror="this.style.display='none';" />
+            <div class="phs-this-is-me">⚡ This Is Me</div>
+            <div class="phs-watch-pill">▶ Watch 0:14 — #12</div>
+            <div class="phs-yt-overlay">
+              <div class="phs-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
             </div>
           </div>
-          <div class="archive-grid" id="phs-archive">
+          <div class="phs-yt-meta">
+            <div class="phs-yt-title">Pullman vs Selah</div>
+            <div class="phs-yt-sub">1985 State Playoff · Football</div>
+          </div>
+        </div>
+
         <div class="archive-card" data-tags="football 1985 season greyhounds coach johnson">
-          <div class="archive-thumb" style="background:#000d1f;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#000d1f;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#003087;color:#fff;">FOOTBALL</span>
@@ -5455,7 +5506,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="football 1979 homecoming greyhounds coach smith">
-          <div class="archive-thumb" style="background:#000d1f;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#000d1f;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#003087;color:#fff;">FOOTBALL</span>
@@ -5473,7 +5524,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="basketball 1991 boys state tournament greyhounds coach davis">
-          <div class="archive-thumb" style="background:#000d1f;">🏀<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#000d1f;">🏀<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#1a3a6a;color:#F5C518;">BASKETBALL</span>
@@ -5491,7 +5542,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="basketball 2001 girls state championship coach miller">
-          <div class="archive-thumb" style="background:#000d1f;">🏀<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#000d1f;">🏀<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#1a3a6a;color:#F5C518;">BASKETBALL</span>
@@ -5509,7 +5560,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="track field 1988 district championship coach nelson">
-          <div class="archive-thumb" style="background:#000d1f;">🏃<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#000d1f;">🏃<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#2a4a2a;color:#5fa87e;">TRACK</span>
@@ -5992,7 +6043,7 @@
       <div class="locker-saved-grid" id="locker-saved-grid">
 
         <div class="archive-card" data-tags="wsu football 1981 holiday bowl">
-          <div class="archive-thumb" style="background:#200810;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#200810;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#981E32;color:#fff;">FOOTBALL</span>
@@ -6012,7 +6063,7 @@
         </div>
 
         <div class="archive-card" data-tags="isu basketball 1944 sweet sixteen">
-          <div class="archive-thumb" style="background:#0a0815;">🏀<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0a0815;">🏀<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#C8102E;color:#fff;">BASKETBALL</span>
@@ -6552,7 +6603,7 @@
       </div>
       <div class="archive-grid" id="nd-archive">
         <div class="archive-card" data-tags="football 1988 national championship fiesta bowl lou holtz">
-          <div class="archive-thumb" style="background:#0a1520;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0a1520;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#0C2340;color:#C99700;">FOOTBALL</span>
@@ -6569,7 +6620,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="football 1993 cotton bowl florida state lou holtz">
-          <div class="archive-thumb" style="background:#0a1520;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0a1520;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#0C2340;color:#C99700;">FOOTBALL</span>
@@ -6586,7 +6637,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="basketball 1978 ncaa tournament digger phelps">
-          <div class="archive-thumb" style="background:#0a1520;">🏀<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0a1520;">🏀<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#1a2a4a;color:#8ab0e8;">BASKETBALL</span>
@@ -6809,7 +6860,7 @@
       </div>
       <div class="archive-grid" id="gon-archive">
         <div class="archive-card" data-tags="basketball 2021 ncaa final four mark few drew timme">
-          <div class="archive-thumb" style="background:#001030;">🏀<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#001030;">🏀<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#002469;color:#fff;">BASKETBALL</span>
@@ -6826,7 +6877,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="basketball 1999 ncaa tournament dan dickau mark few">
-          <div class="archive-thumb" style="background:#001030;">🏀<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#001030;">🏀<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#002469;color:#fff;">BASKETBALL</span>
@@ -6843,7 +6894,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="basketball 2017 ncaa championship final adam morrison">
-          <div class="archive-thumb" style="background:#001030;">🏀<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#001030;">🏀<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#002469;color:#fff;">BASKETBALL</span>
@@ -7066,7 +7117,7 @@
       </div>
       <div class="archive-grid" id="lsu-archive">
         <div class="archive-card" data-tags="football 2003 national championship nick saban">
-          <div class="archive-thumb" style="background:#1a0a30;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#1a0a30;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#461D7C;color:#FDD023;">FOOTBALL</span>
@@ -7083,7 +7134,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="football 2019 national championship joe burrow ed orgeron">
-          <div class="archive-thumb" style="background:#1a0a30;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#1a0a30;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#461D7C;color:#FDD023;">FOOTBALL</span>
@@ -7100,7 +7151,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="baseball 2009 college world series paul mainieri">
-          <div class="archive-thumb" style="background:#0d1020;">⚾<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0d1020;">⚾<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#2a2a1a;color:#FDD023;">BASEBALL</span>
@@ -7324,7 +7375,7 @@
       </div>
       <div class="archive-grid" id="ucl-archive">
         <div class="archive-card" data-tags="basketball 1972 national championship bill walton john wooden">
-          <div class="archive-thumb" style="background:#0a1830;">🏀<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0a1830;">🏀<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#2D68C4;color:#FFD100;">BASKETBALL</span>
@@ -7341,7 +7392,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="football 1997 rose bowl donovan mcnabb drew bledsoe">
-          <div class="archive-thumb" style="background:#0a1830;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0a1830;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#1a2a4a;color:#8ab0e8;">FOOTBALL</span>
@@ -7358,7 +7409,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="volleyball 2011 ncaa championship">
-          <div class="archive-thumb" style="background:#0a1830;">🏐<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0a1830;">🏐<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#1a2a3a;color:#8abbe8;">VOLLEYBALL</span>
@@ -7582,7 +7633,7 @@
       </div>
       <div class="archive-grid" id="uw-archive">
         <div class="archive-card" data-tags="football 1992 rose bowl don james mark brunell">
-          <div class="archive-thumb" style="background:#1a0a30;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#1a0a30;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#4B2E83;color:#B7A57A;">FOOTBALL</span>
@@ -7599,7 +7650,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="football 2024 rose bowl michael penix kalen deboer">
-          <div class="archive-thumb" style="background:#1a0a30;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#1a0a30;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#4B2E83;color:#B7A57A;">FOOTBALL</span>
@@ -7616,7 +7667,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="rowing 2021 ncaa championship husky crew">
-          <div class="archive-thumb" style="background:#1a0a30;">🚣<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#1a0a30;">🚣<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#2a1a4a;color:#B7A57A;">ROWING</span>
@@ -7839,7 +7890,7 @@
       </div>
       <div class="archive-grid" id="tex-archive">
         <div class="archive-card" data-tags="football 2005 national championship vince young mack brown rose bowl">
-          <div class="archive-thumb" style="background:#3a1500;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#3a1500;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#BF5700;color:#fff;">FOOTBALL</span>
@@ -7856,7 +7907,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="football 1969 national championship darrell royal cotton bowl">
-          <div class="archive-thumb" style="background:#3a1500;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#3a1500;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#BF5700;color:#fff;">FOOTBALL</span>
@@ -7873,7 +7924,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="basketball 2003 ncaa tournament rick barnes t.j. ford">
-          <div class="archive-thumb" style="background:#3a1500;">🏀<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#3a1500;">🏀<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#1a2a4a;color:#f0b060;">BASKETBALL</span>
@@ -9872,7 +9923,7 @@
       </div>
       <div class="archive-grid" id="nd-archive">
         <div class="archive-card" data-tags="football 1988 national championship fiesta bowl lou holtz">
-          <div class="archive-thumb" style="background:#0a1520;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0a1520;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#0C2340;color:#C99700;">FOOTBALL</span>
@@ -9889,7 +9940,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="football 1993 cotton bowl florida state lou holtz">
-          <div class="archive-thumb" style="background:#0a1520;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0a1520;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#0C2340;color:#C99700;">FOOTBALL</span>
@@ -9906,7 +9957,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="basketball 1978 ncaa tournament digger phelps">
-          <div class="archive-thumb" style="background:#0a1520;">🏀<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0a1520;">🏀<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#1a2a4a;color:#8ab0e8;">BASKETBALL</span>
@@ -10129,7 +10180,7 @@
       </div>
       <div class="archive-grid" id="gon-archive">
         <div class="archive-card" data-tags="basketball 2021 ncaa final four mark few drew timme">
-          <div class="archive-thumb" style="background:#001030;">🏀<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#001030;">🏀<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#002469;color:#fff;">BASKETBALL</span>
@@ -10146,7 +10197,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="basketball 1999 ncaa tournament dan dickau mark few">
-          <div class="archive-thumb" style="background:#001030;">🏀<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#001030;">🏀<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#002469;color:#fff;">BASKETBALL</span>
@@ -10163,7 +10214,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="basketball 2017 ncaa championship final adam morrison">
-          <div class="archive-thumb" style="background:#001030;">🏀<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#001030;">🏀<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#002469;color:#fff;">BASKETBALL</span>
@@ -10386,7 +10437,7 @@
       </div>
       <div class="archive-grid" id="lsu-archive">
         <div class="archive-card" data-tags="football 2003 national championship nick saban">
-          <div class="archive-thumb" style="background:#1a0a30;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#1a0a30;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#461D7C;color:#FDD023;">FOOTBALL</span>
@@ -10403,7 +10454,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="football 2019 national championship joe burrow ed orgeron">
-          <div class="archive-thumb" style="background:#1a0a30;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#1a0a30;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#461D7C;color:#FDD023;">FOOTBALL</span>
@@ -10420,7 +10471,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="baseball 2009 college world series paul mainieri">
-          <div class="archive-thumb" style="background:#0d1020;">⚾<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0d1020;">⚾<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#2a2a1a;color:#FDD023;">BASEBALL</span>
@@ -10644,7 +10695,7 @@
       </div>
       <div class="archive-grid" id="ucl-archive">
         <div class="archive-card" data-tags="basketball 1972 national championship bill walton john wooden">
-          <div class="archive-thumb" style="background:#0a1830;">🏀<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0a1830;">🏀<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#2D68C4;color:#FFD100;">BASKETBALL</span>
@@ -10661,7 +10712,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="football 1997 rose bowl donovan mcnabb drew bledsoe">
-          <div class="archive-thumb" style="background:#0a1830;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0a1830;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#1a2a4a;color:#8ab0e8;">FOOTBALL</span>
@@ -10678,7 +10729,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="volleyball 2011 ncaa championship">
-          <div class="archive-thumb" style="background:#0a1830;">🏐<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#0a1830;">🏐<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#1a2a3a;color:#8abbe8;">VOLLEYBALL</span>
@@ -10902,7 +10953,7 @@
       </div>
       <div class="archive-grid" id="uw-archive">
         <div class="archive-card" data-tags="football 1992 rose bowl don james mark brunell">
-          <div class="archive-thumb" style="background:#1a0a30;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#1a0a30;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#4B2E83;color:#B7A57A;">FOOTBALL</span>
@@ -10919,7 +10970,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="football 2024 rose bowl michael penix kalen deboer">
-          <div class="archive-thumb" style="background:#1a0a30;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#1a0a30;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#4B2E83;color:#B7A57A;">FOOTBALL</span>
@@ -10936,7 +10987,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="rowing 2021 ncaa championship husky crew">
-          <div class="archive-thumb" style="background:#1a0a30;">🚣<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#1a0a30;">🚣<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#2a1a4a;color:#B7A57A;">ROWING</span>
@@ -11159,7 +11210,7 @@
       </div>
       <div class="archive-grid" id="tex-archive">
         <div class="archive-card" data-tags="football 2005 national championship vince young mack brown rose bowl">
-          <div class="archive-thumb" style="background:#3a1500;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#3a1500;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#BF5700;color:#fff;">FOOTBALL</span>
@@ -11176,7 +11227,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="football 1969 national championship darrell royal cotton bowl">
-          <div class="archive-thumb" style="background:#3a1500;">🏈<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#3a1500;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#BF5700;color:#fff;">FOOTBALL</span>
@@ -11193,7 +11244,7 @@
           </div>
         </div>
         <div class="archive-card" data-tags="basketball 2003 ncaa tournament rick barnes t.j. ford">
-          <div class="archive-thumb" style="background:#3a1500;">🏀<div class="archive-play">▶</div></div>
+          <div class="archive-thumb" style="background:#3a1500;">🏀<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#1a2a4a;color:#f0b060;">BASKETBALL</span>
