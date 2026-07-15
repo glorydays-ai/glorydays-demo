@@ -4661,6 +4661,14 @@
         .isu-play-circle svg { margin-left:4px; }
         .isu-badge-pill { position:absolute; top:7px; left:7px; background:rgba(0,0,0,0.72); border-radius:4px; padding:2px 7px; font-size:0.6rem; font-weight:800; letter-spacing:1px; color:#F1BE48; text-transform:uppercase; }
         .isu-upset-pill { position:absolute; top:7px; right:7px; background:rgba(34,197,94,0.85); border-radius:4px; padding:2px 7px; font-size:0.6rem; font-weight:800; letter-spacing:1px; color:#fff; text-transform:uppercase; }
+        .isu-exclusive-pill { position:absolute; top:7px; right:7px; background:linear-gradient(135deg,#C8102E 0%,#8a0a20 100%); border-radius:4px; padding:2px 8px; font-size:0.6rem; font-weight:800; letter-spacing:0.8px; color:#fff; text-transform:uppercase; border:1px solid rgba(255,255,255,0.15); }
+        .isu-thumb-emoji { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:2.2rem; pointer-events:none; }
+        .isu-player-iframe-wrap video { position:absolute; top:0; left:0; width:100%; height:100%; border:0; background:#000; }
+        /* Exclusive archive banner — spans full grid width */
+        .isu-exclusive-banner { grid-column:1/-1; background:linear-gradient(135deg,rgba(200,16,46,0.10) 0%,rgba(13,17,23,0) 70%); border:1px solid rgba(200,16,46,0.28); border-radius:10px; padding:14px 18px; display:flex; align-items:flex-start; gap:14px; margin-top:4px; }
+        .isu-exclusive-banner-icon { font-size:1.5rem; flex-shrink:0; margin-top:1px; }
+        .isu-exclusive-banner-title { font-size:0.72rem; font-weight:800; color:#C8102E; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:5px; }
+        .isu-exclusive-banner-body { font-size:0.74rem; color:#94a3b8; line-height:1.55; }
         .isu-vcard-meta { padding:9px 11px 11px; }
         .isu-vcard-title { font-size:0.88rem; font-weight:700; color:#e2e8f0; line-height:1.3; margin-bottom:4px; }
         .isu-vcard-sub { font-size:0.7rem; color:#64748b; }
@@ -4699,6 +4707,20 @@
           row.classList.remove('active');
           document.querySelectorAll('.isu-vcard').forEach(function(c){ c.classList.remove('playing'); });
         }
+        function playISULocal(cardId, filename, title, era) {
+          var row = document.getElementById('isu-player-row');
+          var wrap = document.getElementById('isu-player-wrap');
+          var ptitle = document.getElementById('isu-player-title');
+          var pera = document.getElementById('isu-player-era');
+          document.querySelectorAll('.isu-vcard').forEach(function(c){ c.classList.remove('playing'); });
+          var card = document.getElementById(cardId);
+          if(card) card.classList.add('playing');
+          wrap.innerHTML = '<div class="isu-player-iframe-wrap"><video src="../' + filename + '" controls autoplay playsinline></video></div>';
+          ptitle.textContent = title;
+          pera.textContent = era;
+          row.classList.add('active');
+          row.scrollIntoView({behavior:'smooth', block:'nearest'});
+        }
       </script>
 
       <!-- VIDEO GRID -->
@@ -4719,39 +4741,41 @@
           </div>
         </div>
 
-        <!-- Card 2 — Iowa State vs #1 Oklahoma 1991 -->
-        <div class="isu-vcard" id="isuvc-u81UIjcS62A" onclick="playISUGrid('u81UIjcS62A','Iowa State defeats #1 Oklahoma — The Upset','IOWA STATE · FOOTBALL · 1991 — THIS IS ME','Football')">
-          <div class="isu-thumb-wrap">
-            <img src="https://img.youtube.com/vi/u81UIjcS62A/hqdefault.jpg" alt="Iowa State vs Oklahoma 1991" onerror="this.style.display='none';" />
+        <!-- Card 2 — Iowa State vs #1 Oklahoma 1991 — Personal digitized staff film -->
+        <div class="isu-vcard" id="isuvc-oklahoma91" onclick="playISULocal('isuvc-oklahoma91','ISU_vs_Oklahoma_1991.MP4','Iowa State defeats #1 Oklahoma — The Upset','IOWA STATE · FOOTBALL · 1991 — STAFF-FILMED · GLORYDAY EXCLUSIVE')">
+          <div class="isu-thumb-wrap" style="background:#1a0508;">
+            <div class="isu-thumb-emoji">🏈</div>
             <div class="isu-badge-pill">Football · 1991</div>
             <div class="isu-upset-pill">🏆 The Upset</div>
+            <div class="isu-exclusive-pill" style="top:auto;bottom:7px;right:7px;">🔒 GD Exclusive</div>
             <div class="isu-thumb-overlay">
               <div class="isu-play-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
             </div>
           </div>
           <div class="isu-vcard-meta">
             <div class="isu-vcard-title">Iowa State vs #1 Oklahoma</div>
-            <div class="isu-vcard-sub">1991 · Staff-filmed · Never broadcast</div>
+            <div class="isu-vcard-sub">1991 · Jim Walden HC · Staff-filmed · Never broadcast · GloryDays Exclusive</div>
           </div>
         </div>
 
-        <!-- Card 3 — Iowa State vs Nebraska 1992 -->
-        <div class="isu-vcard" id="isuvc-Cttbgajsbkw" onclick="playISUGrid('Cttbgajsbkw','Iowa State defeats Nebraska — Jim Walden HC','IOWA STATE · FOOTBALL · 1992 — THIS IS ME','Football')">
-          <div class="isu-thumb-wrap">
-            <img src="https://img.youtube.com/vi/Cttbgajsbkw/hqdefault.jpg" alt="Iowa State vs Nebraska 1992" onerror="this.style.display='none';" />
+        <!-- Card 3 — Iowa State vs Nebraska 1992 — Personal digitized staff film -->
+        <div class="isu-vcard" id="isuvc-nebraska92" onclick="playISULocal('isuvc-nebraska92','1992_Upset_Iowa_State_vs_Nebraska.MP4','Iowa State defeats Nebraska — Jim Walden HC','IOWA STATE · FOOTBALL · 1992 — STAFF-FILMED · GLORYDAY EXCLUSIVE')">
+          <div class="isu-thumb-wrap" style="background:#1a0508;">
+            <div class="isu-thumb-emoji">🏈</div>
             <div class="isu-badge-pill">Football · 1992</div>
             <div class="isu-upset-pill">🏆 The Upset</div>
+            <div class="isu-exclusive-pill" style="top:auto;bottom:7px;right:7px;">🔒 GD Exclusive</div>
             <div class="isu-thumb-overlay">
               <div class="isu-play-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
             </div>
           </div>
           <div class="isu-vcard-meta">
             <div class="isu-vcard-title">Iowa State vs Nebraska</div>
-            <div class="isu-vcard-sub">1992 · Jim Walden HC · Staff-filmed · Never broadcast</div>
+            <div class="isu-vcard-sub">1992 · Jim Walden HC · Staff-filmed · Never broadcast · GloryDays Exclusive</div>
           </div>
         </div>
 
-        <!-- Card 4 — The Jim Walden Show — 1992 Highlights -->
+        <!-- Card 4 — The Jim Walden Show — 1992 YouTube Highlights -->
         <div class="isu-vcard" id="isuvc-NfHav0jD1t0" onclick="playISUGrid('NfHav0jD1t0','The Jim Walden Show — 1992 Season Highlights','IOWA STATE · FOOTBALL · 1992 — THE JIM WALDEN SHOW','Football')">
           <div class="isu-thumb-wrap">
             <img src="https://img.youtube.com/vi/NfHav0jD1t0/hqdefault.jpg" alt="The Jim Walden Show 1992" onerror="this.style.display='none';" />
@@ -4763,6 +4787,63 @@
           <div class="isu-vcard-meta">
             <div class="isu-vcard-title">The Jim Walden Show</div>
             <div class="isu-vcard-sub">1992 Season · Coach's Weekly Highlight Show</div>
+          </div>
+        </div>
+
+        <!-- Exclusive archive divider banner -->
+        <div class="isu-exclusive-banner">
+          <div class="isu-exclusive-banner-icon">🔒</div>
+          <div>
+            <div class="isu-exclusive-banner-title">GloryDays Exclusive Archive — Not Available Anywhere Else</div>
+            <div class="isu-exclusive-banner-body">The videos below were digitized from original staff film and coach's broadcast recordings. They have never been publicly released, never uploaded to YouTube, and exist nowhere else online. This is what GloryDays was built for — game film and coach's shows sitting in personal archives for 30+ years, now accessible for the first time to the players, coaches, and families who lived it.</div>
+          </div>
+        </div>
+
+        <!-- Card 5 — Jim Walden Show Ep.01 — vs Nebraska 11-14-1992 (GloryDays Exclusive) -->
+        <div class="isu-vcard" id="isuvc-jws01" onclick="playISULocal('isuvc-jws01','Jim_Walden_Show_01_Iowa_State_vs_Nebraska_11-14-1992.mp4','The Jim Walden Show — Iowa State vs Nebraska','IOWA STATE · FOOTBALL · NOV 14, 1992 — GLORYDAY EXCLUSIVE')">
+          <div class="isu-thumb-wrap" style="background:#1a0508;">
+            <div class="isu-thumb-emoji">🏈</div>
+            <div class="isu-badge-pill">Football · Nov 14, 1992</div>
+            <div class="isu-exclusive-pill">🔒 GD Exclusive</div>
+            <div class="isu-thumb-overlay">
+              <div class="isu-play-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            </div>
+          </div>
+          <div class="isu-vcard-meta">
+            <div class="isu-vcard-title">Jim Walden Show — vs Nebraska</div>
+            <div class="isu-vcard-sub">Nov 14, 1992 · Ep. 01 · GloryDays Exclusive Archive</div>
+          </div>
+        </div>
+
+        <!-- Card 6 — Jim Walden Show Ep.02 — vs Kansas State 11-06-1992 (GloryDays Exclusive) -->
+        <div class="isu-vcard" id="isuvc-jws02" onclick="playISULocal('isuvc-jws02','Jim_Walden_Show_02_Iowa_State_vs_Kansas_State_11-06-1992.mp4','The Jim Walden Show — Iowa State vs Kansas State','IOWA STATE · FOOTBALL · NOV 6, 1992 — GLORYDAY EXCLUSIVE')">
+          <div class="isu-thumb-wrap" style="background:#1a0508;">
+            <div class="isu-thumb-emoji">🏈</div>
+            <div class="isu-badge-pill">Football · Nov 6, 1992</div>
+            <div class="isu-exclusive-pill">🔒 GD Exclusive</div>
+            <div class="isu-thumb-overlay">
+              <div class="isu-play-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            </div>
+          </div>
+          <div class="isu-vcard-meta">
+            <div class="isu-vcard-title">Jim Walden Show — vs Kansas State</div>
+            <div class="isu-vcard-sub">Nov 6, 1992 · Ep. 02 · GloryDays Exclusive Archive</div>
+          </div>
+        </div>
+
+        <!-- Card 7 — Jim Walden Show Ep.03 — vs Oklahoma State 10-23-1992 (GloryDays Exclusive) -->
+        <div class="isu-vcard" id="isuvc-jws03" onclick="playISULocal('isuvc-jws03','Jim_Walden_Show_03_Iowa_State_vs_Oklahoma_State_10-23-1992.mp4','The Jim Walden Show — Iowa State vs Oklahoma State','IOWA STATE · FOOTBALL · OCT 23, 1992 — GLORYDAY EXCLUSIVE')">
+          <div class="isu-thumb-wrap" style="background:#1a0508;">
+            <div class="isu-thumb-emoji">🏈</div>
+            <div class="isu-badge-pill">Football · Oct 23, 1992</div>
+            <div class="isu-exclusive-pill">🔒 GD Exclusive</div>
+            <div class="isu-thumb-overlay">
+              <div class="isu-play-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            </div>
+          </div>
+          <div class="isu-vcard-meta">
+            <div class="isu-vcard-title">Jim Walden Show — vs Oklahoma State</div>
+            <div class="isu-vcard-sub">Oct 23, 1992 · Ep. 03 · GloryDays Exclusive Archive</div>
           </div>
         </div>
 
