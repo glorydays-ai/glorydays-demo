@@ -174,6 +174,7 @@
     .archive-thumb { width:100%; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; font-size:2.6rem;
       flex-shrink:0; position:relative; overflow:hidden;
       background: radial-gradient(ellipse at 80% 110%, var(--primary,#d4a855) -30%, #0d1117 65%); }
+    .archive-thumb img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
     /* Scanline overlay */
     .archive-thumb::before { content:''; position:absolute; inset:0; pointer-events:none; z-index:1;
       background: repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px); }
@@ -455,6 +456,9 @@
         transition:all 0.2s;
       }
       .nal-btn:hover { background:#1e4a60; }
+      .nal-check-row { display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
+      .nal-check { display:flex; align-items:center; gap:5px; font-size:0.8rem; color:#4ab8de; cursor:pointer; white-space:nowrap; }
+      .nal-check input[type="checkbox"] { width:15px; height:15px; accent-color:#4ab8de; cursor:pointer; }
 
       /* ── 30-SECOND PREVIEW GATE ─────────────────────────────────────── */
       .preview-overlay {
@@ -2984,6 +2988,12 @@
           <input class="nal-input" type="text" placeholder="Your name" value="Charlie Walden"/>
           <input class="nal-input" type="text" placeholder="Jersey # (optional)" style="max-width:130px;" value="36"/>
           <input class="nal-input" type="email" placeholder="Email address"/>
+          
+          <input class="nal-input" type="tel" placeholder="Mobile # for SMS (optional)" style="max-width:190px;"/>
+          <div class="nal-check-row">
+            <label class="nal-check"><input type="checkbox" checked/> ✉ Email</label>
+            <label class="nal-check"><input type="checkbox" checked/> 📱 SMS Text</label>
+          </div>
           <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
         </div>
       </div>
@@ -3852,6 +3862,12 @@
           <input class="nal-input" type="text" placeholder="Your name" value="Georgia Whitehead"/>
           <input class="nal-input" type="text" placeholder="Jersey #" style="max-width:130px;" value="11"/>
           <input class="nal-input" type="email" placeholder="Email address"/>
+          
+          <input class="nal-input" type="tel" placeholder="Mobile # for SMS (optional)" style="max-width:190px;"/>
+          <div class="nal-check-row">
+            <label class="nal-check"><input type="checkbox" checked/> ✉ Email</label>
+            <label class="nal-check"><input type="checkbox" checked/> 📱 SMS Text</label>
+          </div>
           <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
         </div>
       </div>
@@ -4105,7 +4121,13 @@
               <input class="nal-input" id="nal-name" type="text" placeholder="Your name" />
               <input class="nal-input" id="nal-jersey" type="text" placeholder="Jersey # (optional)" style="max-width:130px;" />
               <input class="nal-input" id="nal-email" type="email" placeholder="Email address" />
-              <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
+              
+          <input class="nal-input" type="tel" placeholder="Mobile # for SMS (optional)" style="max-width:190px;"/>
+          <div class="nal-check-row">
+            <label class="nal-check"><input type="checkbox" checked/> ✉ Email</label>
+            <label class="nal-check"><input type="checkbox" checked/> 📱 SMS Text</label>
+          </div>
+          <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
             </div>
           </div>
           <div class="archive-grid" id="wsu-archive">
@@ -4127,18 +4149,19 @@
             <button class="locker-btn" onclick="toggleLocker(this)">&#x1F512; Save to My Locker</button>
           </div>
         </div>
-        <div class="archive-card" data-tags="football 1997 rose bowl ucla ryan leaf coach mike price">
-          <div class="archive-thumb" style="background:#200810;">🏈<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+        <div class="archive-card" data-tags="football 1998 rose bowl michigan ryan leaf coach mike price" onclick="window.open('https://www.youtube.com/watch?v=ksy7jRg__Yo','_blank');event.stopPropagation();">
+          <div class="archive-thumb" style="background:#200810;"><img src="https://img.youtube.com/vi/ksy7jRg__Yo/hqdefault.jpg" alt="WSU vs Michigan 1998 Rose Bowl" onerror="this.style.display='none';" /><div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
               <span class="archive-tag" style="background:#981E32;color:#fff;">FOOTBALL</span>
-              <span class="archive-tag" style="background:#1e2535;color:#b0b8c0;">1997</span>
+              <span class="archive-tag" style="background:#1e2535;color:#b0b8c0;">1998</span>
+              <span class="archive-tag" style="background:#c8921e;color:#fff;font-size:0.55rem;">▶ YouTube</span>
             </div>
-            <div class="archive-title">WSU vs UCLA — 1997 Rose Bowl</div>
-            <div class="archive-sub">Coach: Mike Price · QB: Ryan Leaf · Rose Bowl, Pasadena</div>
-          
-            <button class="preview-btn" onclick="startPreview('WSU vs BYU — 1981 Holiday Bowl Highlight','2.99');event.stopPropagation();">▶ 30-sec Preview</button>
-            <button class="share-btn" onclick="openShareModal('WSU vs BYU — 1981 Holiday Bowl Highlight');event.stopPropagation();" title="Share 30-sec preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
+            <div class="archive-title">WSU vs Michigan — 1998 Rose Bowl</div>
+            <div class="archive-sub">Coach: Mike Price · QB: Ryan Leaf · Rose Bowl, Pasadena · Jan 1, 1998</div>
+
+            <button class="preview-btn" onclick="startPreview('WSU vs Michigan — 1998 Rose Bowl','2.99');event.stopPropagation();">▶ 30-sec Preview</button>
+            <button class="share-btn" onclick="openShareModal('WSU vs Michigan — 1998 Rose Bowl');event.stopPropagation();" title="Share 30-sec preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
           </div>
           <div class="archive-card-right">
             <div class="archive-duration">2:14:05</div>
@@ -4728,6 +4751,21 @@
           </div>
         </div>
 
+        <!-- Card 4 — The Jim Walden Show — 1992 Highlights -->
+        <div class="isu-vcard" id="isuvc-NfHav0jD1t0" onclick="playISUGrid('NfHav0jD1t0','The Jim Walden Show — 1992 Season Highlights','IOWA STATE · FOOTBALL · 1992 — THE JIM WALDEN SHOW','Football')">
+          <div class="isu-thumb-wrap">
+            <img src="https://img.youtube.com/vi/NfHav0jD1t0/hqdefault.jpg" alt="The Jim Walden Show 1992" onerror="this.style.display='none';" />
+            <div class="isu-badge-pill">Football · 1992</div>
+            <div class="isu-thumb-overlay">
+              <div class="isu-play-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            </div>
+          </div>
+          <div class="isu-vcard-meta">
+            <div class="isu-vcard-title">The Jim Walden Show</div>
+            <div class="isu-vcard-sub">1992 Season · Coach's Weekly Highlight Show</div>
+          </div>
+        </div>
+
       </div><!-- /isu-video-grid -->
 
       <!-- Inline player — appears below grid when a card is clicked -->
@@ -4753,7 +4791,13 @@
               <input class="nal-input" id="nal-name" type="text" placeholder="Your name" />
               <input class="nal-input" id="nal-jersey" type="text" placeholder="Jersey # (optional)" style="max-width:130px;" />
               <input class="nal-input" id="nal-email" type="email" placeholder="Email address" />
-              <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
+              
+          <input class="nal-input" type="tel" placeholder="Mobile # for SMS (optional)" style="max-width:190px;"/>
+          <div class="nal-check-row">
+            <label class="nal-check"><input type="checkbox" checked/> ✉ Email</label>
+            <label class="nal-check"><input type="checkbox" checked/> 📱 SMS Text</label>
+          </div>
+          <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
             </div>
           </div>
           <div class="archive-grid" id="isu-archive">
@@ -5102,7 +5146,13 @@
               <input class="nal-input" id="nal-name" type="text" placeholder="Your name" />
               <input class="nal-input" id="nal-jersey" type="text" placeholder="Jersey # (optional)" style="max-width:130px;" />
               <input class="nal-input" id="nal-email" type="email" placeholder="Email address" />
-              <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
+              
+          <input class="nal-input" type="tel" placeholder="Mobile # for SMS (optional)" style="max-width:190px;"/>
+          <div class="nal-check-row">
+            <label class="nal-check"><input type="checkbox" checked/> ✉ Email</label>
+            <label class="nal-check"><input type="checkbox" checked/> 📱 SMS Text</label>
+          </div>
+          <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
             </div>
           </div>
           <div class="archive-grid" id="unl-archive">
@@ -5439,6 +5489,12 @@
         <div class="nal-form">
           <input class="nal-input" id="nal-name" type="text" placeholder="Your name" />
           <input class="nal-input" id="nal-email" type="email" placeholder="Email address" />
+          
+          <input class="nal-input" type="tel" placeholder="Mobile # for SMS (optional)" style="max-width:190px;"/>
+          <div class="nal-check-row">
+            <label class="nal-check"><input type="checkbox" checked/> ✉ Email</label>
+            <label class="nal-check"><input type="checkbox" checked/> 📱 SMS Text</label>
+          </div>
           <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
         </div>
       </div>
@@ -6663,6 +6719,12 @@
           <input class="nal-input" type="text" placeholder="Your name" />
           <input class="nal-input" id="nal-jersey" type="text" placeholder="Jersey # (optional)" style="max-width:130px;" />
           <input class="nal-input" type="email" placeholder="Email address" />
+          
+          <input class="nal-input" type="tel" placeholder="Mobile # for SMS (optional)" style="max-width:190px;"/>
+          <div class="nal-check-row">
+            <label class="nal-check"><input type="checkbox" checked/> ✉ Email</label>
+            <label class="nal-check"><input type="checkbox" checked/> 📱 SMS Text</label>
+          </div>
           <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
         </div>
       </div>
@@ -6920,6 +6982,12 @@
           <input class="nal-input" type="text" placeholder="Your name" />
           <input class="nal-input" type="text" placeholder="Jersey # (optional)" style="max-width:130px;" />
           <input class="nal-input" type="email" placeholder="Email address" />
+          
+          <input class="nal-input" type="tel" placeholder="Mobile # for SMS (optional)" style="max-width:190px;"/>
+          <div class="nal-check-row">
+            <label class="nal-check"><input type="checkbox" checked/> ✉ Email</label>
+            <label class="nal-check"><input type="checkbox" checked/> 📱 SMS Text</label>
+          </div>
           <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
         </div>
       </div>
@@ -7177,6 +7245,12 @@
           <input class="nal-input" type="text" placeholder="Your name" />
           <input class="nal-input" type="text" placeholder="Jersey # (optional)" style="max-width:130px;" />
           <input class="nal-input" type="email" placeholder="Email address" />
+          
+          <input class="nal-input" type="tel" placeholder="Mobile # for SMS (optional)" style="max-width:190px;"/>
+          <div class="nal-check-row">
+            <label class="nal-check"><input type="checkbox" checked/> ✉ Email</label>
+            <label class="nal-check"><input type="checkbox" checked/> 📱 SMS Text</label>
+          </div>
           <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
         </div>
       </div>
@@ -7435,6 +7509,12 @@
           <input class="nal-input" type="text" placeholder="Your name" />
           <input class="nal-input" type="text" placeholder="Jersey # (optional)" style="max-width:130px;" />
           <input class="nal-input" type="email" placeholder="Email address" />
+          
+          <input class="nal-input" type="tel" placeholder="Mobile # for SMS (optional)" style="max-width:190px;"/>
+          <div class="nal-check-row">
+            <label class="nal-check"><input type="checkbox" checked/> ✉ Email</label>
+            <label class="nal-check"><input type="checkbox" checked/> 📱 SMS Text</label>
+          </div>
           <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
         </div>
       </div>
@@ -7693,6 +7773,12 @@
           <input class="nal-input" type="text" placeholder="Your name" />
           <input class="nal-input" type="text" placeholder="Jersey # (optional)" style="max-width:130px;" />
           <input class="nal-input" type="email" placeholder="Email address" />
+          
+          <input class="nal-input" type="tel" placeholder="Mobile # for SMS (optional)" style="max-width:190px;"/>
+          <div class="nal-check-row">
+            <label class="nal-check"><input type="checkbox" checked/> ✉ Email</label>
+            <label class="nal-check"><input type="checkbox" checked/> 📱 SMS Text</label>
+          </div>
           <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
         </div>
       </div>
@@ -7950,6 +8036,12 @@
           <input class="nal-input" type="text" placeholder="Your name" />
           <input class="nal-input" type="text" placeholder="Jersey # (optional)" style="max-width:130px;" />
           <input class="nal-input" type="email" placeholder="Email address" />
+          
+          <input class="nal-input" type="tel" placeholder="Mobile # for SMS (optional)" style="max-width:190px;"/>
+          <div class="nal-check-row">
+            <label class="nal-check"><input type="checkbox" checked/> ✉ Email</label>
+            <label class="nal-check"><input type="checkbox" checked/> 📱 SMS Text</label>
+          </div>
           <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
         </div>
       </div>
@@ -9983,6 +10075,12 @@
           <input class="nal-input" type="text" placeholder="Your name" />
           <input class="nal-input" id="nal-jersey" type="text" placeholder="Jersey # (optional)" style="max-width:130px;" />
           <input class="nal-input" type="email" placeholder="Email address" />
+          
+          <input class="nal-input" type="tel" placeholder="Mobile # for SMS (optional)" style="max-width:190px;"/>
+          <div class="nal-check-row">
+            <label class="nal-check"><input type="checkbox" checked/> ✉ Email</label>
+            <label class="nal-check"><input type="checkbox" checked/> 📱 SMS Text</label>
+          </div>
           <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
         </div>
       </div>
@@ -10240,6 +10338,12 @@
           <input class="nal-input" type="text" placeholder="Your name" />
           <input class="nal-input" type="text" placeholder="Jersey # (optional)" style="max-width:130px;" />
           <input class="nal-input" type="email" placeholder="Email address" />
+          
+          <input class="nal-input" type="tel" placeholder="Mobile # for SMS (optional)" style="max-width:190px;"/>
+          <div class="nal-check-row">
+            <label class="nal-check"><input type="checkbox" checked/> ✉ Email</label>
+            <label class="nal-check"><input type="checkbox" checked/> 📱 SMS Text</label>
+          </div>
           <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
         </div>
       </div>
@@ -10497,6 +10601,12 @@
           <input class="nal-input" type="text" placeholder="Your name" />
           <input class="nal-input" type="text" placeholder="Jersey # (optional)" style="max-width:130px;" />
           <input class="nal-input" type="email" placeholder="Email address" />
+          
+          <input class="nal-input" type="tel" placeholder="Mobile # for SMS (optional)" style="max-width:190px;"/>
+          <div class="nal-check-row">
+            <label class="nal-check"><input type="checkbox" checked/> ✉ Email</label>
+            <label class="nal-check"><input type="checkbox" checked/> 📱 SMS Text</label>
+          </div>
           <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
         </div>
       </div>
@@ -10755,6 +10865,12 @@
           <input class="nal-input" type="text" placeholder="Your name" />
           <input class="nal-input" type="text" placeholder="Jersey # (optional)" style="max-width:130px;" />
           <input class="nal-input" type="email" placeholder="Email address" />
+          
+          <input class="nal-input" type="tel" placeholder="Mobile # for SMS (optional)" style="max-width:190px;"/>
+          <div class="nal-check-row">
+            <label class="nal-check"><input type="checkbox" checked/> ✉ Email</label>
+            <label class="nal-check"><input type="checkbox" checked/> 📱 SMS Text</label>
+          </div>
           <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
         </div>
       </div>
@@ -11013,6 +11129,12 @@
           <input class="nal-input" type="text" placeholder="Your name" />
           <input class="nal-input" type="text" placeholder="Jersey # (optional)" style="max-width:130px;" />
           <input class="nal-input" type="email" placeholder="Email address" />
+          
+          <input class="nal-input" type="tel" placeholder="Mobile # for SMS (optional)" style="max-width:190px;"/>
+          <div class="nal-check-row">
+            <label class="nal-check"><input type="checkbox" checked/> ✉ Email</label>
+            <label class="nal-check"><input type="checkbox" checked/> 📱 SMS Text</label>
+          </div>
           <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
         </div>
       </div>
@@ -11270,6 +11392,12 @@
           <input class="nal-input" type="text" placeholder="Your name" />
           <input class="nal-input" type="text" placeholder="Jersey # (optional)" style="max-width:130px;" />
           <input class="nal-input" type="email" placeholder="Email address" />
+          
+          <input class="nal-input" type="tel" placeholder="Mobile # for SMS (optional)" style="max-width:190px;"/>
+          <div class="nal-check-row">
+            <label class="nal-check"><input type="checkbox" checked/> ✉ Email</label>
+            <label class="nal-check"><input type="checkbox" checked/> 📱 SMS Text</label>
+          </div>
           <button class="nal-btn" onclick="submitNameAlert()">🔔 Alert Me</button>
         </div>
       </div>
