@@ -535,7 +535,7 @@
         border:2px solid #52b788; border-radius:4px;
         box-shadow:0 0 0 1px rgba(74,222,128,0.3), 0 0 16px rgba(74,222,128,0.4);
         animation:bb-pulse 1.8s ease-in-out infinite;
-        transition: top 0.4s ease, left 0.4s ease, width 0.4s ease, height 0.4s ease;
+        transition: top 0.15s linear, left 0.15s linear, width 0.15s linear, height 0.15s linear;
         top:18%; left:34%; width:18%; height:52%;
         z-index:10;
       }
@@ -6144,39 +6144,37 @@
     if (hudEl) hudEl.style.display = 'block';
     // After 1.5s, resolve player identity
     if (bbLabelEl) {
-      bbLabelEl.textContent = '🎯 IDENTIFYING...';
+      bbLabelEl.textContent = '🔍 SCANNING...';
+      setTimeout(function() {
+        bbLabelEl.textContent = '🎯 JERSEY #12 DETECTED';
+      }, 900);
       setTimeout(function() {
         bbLabelEl.textContent = playerName ? ('✅ ' + playerName) : '✅ PLAYER IDENTIFIED';
-      }, 1500);
+      }, 2000);
     }
     if (badgeEl) badgeEl.classList.add('active');
 
-    // Simulate AI tracking — move bounding box through realistic QB positions over 30s
-    // Each entry: [top%, left%, width%, height%]
-    var trackPath = [
-      [28, 36, 22, 44],  // 0s:  QB calling play in huddle
-      [32, 42, 18, 40],  // 3.5s: breaking huddle
-      [36, 48, 16, 38],  // 7s:  walking to line
-      [40, 44, 17, 36],  // 10.5s: crouched under center
-      [34, 40, 18, 40],  // 14s: snap — moving back
-      [26, 32, 20, 46],  // 17.5s: dropping back / handing off
-      [24, 38, 18, 48],  // 21s: post-play standing
-      [30, 42, 16, 42],  // 24.5s: jogging back
-      [29, 37, 20, 44]   // 28s: back in huddle
+    // AI tracking — lock onto QB position with micro-jitter (realistic tracker behavior)
+    // Center box on where #12 is at t=14 in Pullman vs Selah: slightly right of center, mid-frame
+    var baseTop = 22, baseLeft = 38, baseW = 20, baseH = 48;
+    // Micro-jitter: tiny offsets simulating tracker lock (±2%)
+    var jitter = [
+      [0, 0], [1, -1], [-1, 1], [0, 2], [2, 0],
+      [-1, -1], [1, 1], [0, -2], [-2, 1], [1, 0]
     ];
-    var trackIdx = 0;
+    var jIdx = 0;
     function moveTrackBox() {
       if (!bbEl || !bbEl.classList.contains('active')) return;
-      var p = trackPath[trackIdx % trackPath.length];
-      bbEl.style.top    = p[0] + '%';
-      bbEl.style.left   = p[1] + '%';
-      bbEl.style.width  = p[2] + '%';
-      bbEl.style.height = p[3] + '%';
-      trackIdx++;
+      var j = jitter[jIdx % jitter.length];
+      bbEl.style.top    = (baseTop  + j[0]) + '%';
+      bbEl.style.left   = (baseLeft + j[1]) + '%';
+      bbEl.style.width  = baseW + '%';
+      bbEl.style.height = baseH + '%';
+      jIdx++;
     }
     moveTrackBox();
     if (window._gloryTrackInterval) clearInterval(window._gloryTrackInterval);
-    window._gloryTrackInterval = setInterval(moveTrackBox, 3500);
+    window._gloryTrackInterval = setInterval(moveTrackBox, 800);
 
     overlay.classList.add('show');
     timerEl.textContent = '0:30';
@@ -6844,7 +6842,7 @@
     <div class="pm-video-wrap">
       <div class="pm-video-placeholder" id="pm-placeholder">▶</div>
       <iframe id="pm-video-iframe" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      <div class="pm-ai-hud" id="pm-ai-hud">🟢 GloryDays AI — TRACKING</div>
+      <div class="pm-ai-hud" id="pm-ai-hud">🟢 GloryDays AI · #12 · Clip 1 of 6</div>
       <div class="pm-scan-line"></div>
       <div class="pm-bounding-box active" id="pm-bounding-box">
         <div class="pm-bb-corner tl"></div><div class="pm-bb-corner tr"></div>
