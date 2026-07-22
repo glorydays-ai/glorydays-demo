@@ -570,7 +570,19 @@
         background:rgba(0,10,20,0.82); border:1px solid #52b788;
         border-radius:5px; padding:4px 8px; font-size:0.58rem;
         color:#52b788; font-weight:700; letter-spacing:0.5px;
-        font-family:monospace; z-index:11;
+        font-family:monospace; z-index:11; transition:color 0.3s;
+      }
+      .pm-detection-bar {
+        position:absolute; bottom:0; left:0; right:0;
+        background:rgba(0,10,20,0.88); border-top:1px solid #52b788;
+        padding:5px 10px; font-size:0.62rem; color:#52b788;
+        font-family:monospace; font-weight:700; z-index:11;
+        display:none; letter-spacing:0.3px;
+      }
+      .pm-detection-bar.show { display:block; }
+      .pm-det-confirmed {
+        display:inline-block; background:#52b788; color:#001a0a;
+        border-radius:3px; padding:1px 6px; margin-right:6px; font-weight:800;
       }
       .pm-highlight-badge {
         display:none; align-items:center; gap:8px;
@@ -6136,114 +6148,51 @@
     }
 
     // AI bounding box — always show, update label with playerName
-    const bbEl      = document.getElementById('pm-bounding-box');
-    const bbLabelEl = document.getElementById('pm-bb-label');
+    const bbEl      = null; // bounding box removed — using detection bar instead
+    const bbLabelEl = null;
     const badgeEl   = document.getElementById('pm-highlight-badge');
     const hudEl     = document.getElementById('pm-ai-hud');
-    if (bbEl) bbEl.classList.add('active');
     if (hudEl) hudEl.style.display = 'block';
-    // After 1.5s, resolve player identity
-    if (bbLabelEl) {
-      bbLabelEl.textContent = '🎯 IDENTIFYING...';
-    }
     if (badgeEl) badgeEl.classList.add('active');
 
-    // AI tracking state machine — box locks on, disappears when player not visible, re-acquires
+    // AI scan — no fake bounding box on live video; show scan then confirmed clip list
     if (window._gloryTrackInterval) clearInterval(window._gloryTrackInterval);
-    if (window._gloryTimers) { window._gloryTimers.forEach(function(t){ clearTimeout(t); }); window._gloryTimers = []; }
     window._gloryTimers = window._gloryTimers || [];
     window._gloryTimers.forEach(function(t){ clearTimeout(t); });
     window._gloryTimers = [];
+    function T(fn, ms) { window._gloryTimers.push(setTimeout(fn, ms)); }
 
-    var jitter = [[0,0],[1,-1],[-1,1],[0,1],[1,0],[-1,0],[0,-1],[1,1],[-1,-1],[0,0]];
-    var jIdx = 0;
-
-    function setBox(top, left, w, h) {
-      if (!bbEl) return;
-      bbEl.style.top = top+'%'; bbEl.style.left = left+'%';
-      bbEl.style.width = w+'%'; bbEl.style.height = h+'%';
-    }
-    function showBox(top, left, w, h) {
-      setBox(top, left, w, h);
-      bbEl.style.opacity = '1';
-      bbEl.classList.add('active');
-    }
-    function hideBox() {
-      if (!bbEl) return;
-      bbEl.style.opacity = '0';
-      setTimeout(function(){ bbEl.classList.remove('active'); }, 300);
-    }
-    function setHud(txt) { if (hudEl) hudEl.textContent = txt; }
-    function setLabel(txt) { if (bbLabelEl) bbLabelEl.textContent = txt; }
-
-    function startJitter(top, left, w, h) {
-      if (window._gloryTrackInterval) clearInterval(window._gloryTrackInterval);
-      window._gloryTrackInterval = setInterval(function(){
-        if (!bbEl || bbEl.style.opacity === '0') return;
-        var j = jitter[jIdx++ % jitter.length];
-        setBox(top + j[0]*0.5, left + j[1]*0.5, w, h);
-      }, 600);
-    }
-    function stopJitter() {
-      if (window._gloryTrackInterval) clearInterval(window._gloryTrackInterval);
+    var detBar = document.getElementById('pm-detection-bar');
+    var scanLine = document.getElementById('pm-scan-line');
+    function setHud(txt, color) {
+      if (hudEl) { hudEl.textContent = txt; if (color) hudEl.style.color = color; }
     }
 
-    function T(fn, ms) {
-      window._gloryTimers.push(setTimeout(fn, ms));
-    }
+    // Phase 1: scanning (0-2.5s)
+    setHud('🔍 Scanning footage for #12...');
+    if (scanLine) scanLine.style.display = 'block';
 
-    // === TIMELINE (video starts at t=14 in video = t=0 here) ===
-    // 0-7s: QB in huddle / under center — LOCKED
-    setHud('🟢 GloryDays AI · #12 · Clip 1 of 6');
-    showBox(24, 37, 20, 48);
-    startJitter(24, 37, 20, 48);
-
-    // 7s: play happens, player moves — LOST briefly
+    // Phase 2: detecting (2.5s)
     T(function(){
-      stopJitter();
-      hideBox();
-      setHud('📡 Re-scanning... target moved');
-    }, 7000);
+      setHud('🎯 Jersey #12 detected — confirming identity...');
+    }, 2500);
 
-    // 10s: re-acquire on new position (post-snap, QB dropped back)
+    // Phase 3: confirmed (4s) — show name and clip timestamps
     T(function(){
-      showBox(35, 28, 18, 42);
-      setLabel('🎯 #12 RE-ACQUIRED');
-      setHud('🟢 GloryDays AI · #12 · tracking');
-      startJitter(35, 28, 18, 42);
-    }, 10000);
-    T(function(){ setLabel('✅ ' + (playerName || 'PLAYER IDENTIFIED')); }, 11200);
+      setHud('🟢 ' + (playerName || '#12') + ' · 6 clips found', '#52b788');
+      if (scanLine) scanLine.style.display = 'none';
+      if (detBar) {
+        detBar.innerHTML = '<span class="pm-det-confirmed">✅ CONFIRMED</span>' +
+          '<strong>' + (playerName || '#12') + '</strong> &nbsp;·&nbsp; ' +
+          'Detected at: <span style="color:#e8b820">0:14 · 0:28 · 0:41 · 0:55 · 1:08 · 1:22</span>';
+        detBar.classList.add('show');
+      }
+    }, 4000);
 
-    // 16s: post-play, players cluster — LOST again
-    T(function(){
-      stopJitter();
-      hideBox();
-      setHud('📡 Searching... jersey #12');
-    }, 16000);
-
-    // 19s: found again in new formation
-    T(function(){
-      showBox(28, 42, 17, 44);
-      setLabel('🎯 #12 DETECTED');
-      setHud('🟢 GloryDays AI · #12 · Clip 2 of 6');
-      startJitter(28, 42, 17, 44);
-    }, 19000);
-    T(function(){ setLabel('✅ ' + (playerName || 'PLAYER IDENTIFIED')); }, 20200);
-
-    // 25s: brief loss as camera pans
-    T(function(){
-      stopJitter();
-      hideBox();
-      setHud('📡 Camera pan — re-acquiring...');
-    }, 25000);
-
-    // 27s: final lock for remaining time
-    T(function(){
-      showBox(26, 39, 19, 46);
-      setLabel('✅ ' + (playerName || 'PLAYER IDENTIFIED'));
-      setHud('🟢 GloryDays AI · #12 · 6 clips found');
-      startJitter(26, 39, 19, 46);
-    }, 27000);
+    // Phase 4: update clip counter as preview continues
+    T(function(){ setHud('🟢 ' + (playerName||'#12') + ' · viewing clip 2 of 6'); }, 10000);
+    T(function(){ setHud('🟢 ' + (playerName||'#12') + ' · viewing clip 3 of 6'); }, 18000);
+    T(function(){ setHud('🟢 ' + (playerName||'#12') + ' · viewing clip 4 of 6'); }, 24000);
 
     overlay.classList.add('show');
     timerEl.textContent = '0:30';
@@ -6911,13 +6860,9 @@
     <div class="pm-video-wrap">
       <div class="pm-video-placeholder" id="pm-placeholder">▶</div>
       <iframe id="pm-video-iframe" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      <div class="pm-ai-hud" id="pm-ai-hud">🟢 GloryDays AI · #12 · Clip 1 of 6</div>
-      <div class="pm-scan-line"></div>
-      <div class="pm-bounding-box active" id="pm-bounding-box">
-        <div class="pm-bb-corner tl"></div><div class="pm-bb-corner tr"></div>
-        <div class="pm-bb-corner bl"></div><div class="pm-bb-corner br"></div>
-        <div class="pm-bb-label" id="pm-bb-label">🎯 IDENTIFYING...</div>
-      </div>
+      <div class="pm-ai-hud" id="pm-ai-hud">🔍 Scanning footage...</div>
+      <div class="pm-scan-line" id="pm-scan-line"></div>
+      <div class="pm-detection-bar" id="pm-detection-bar"></div>
     </div>
 
     <div class="preview-bar-wrap">
