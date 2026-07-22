@@ -530,7 +530,14 @@
         width:100%; height:100%; border:none;
       }
       #pm-video-iframe.active { display:block; }
-      .pm-bounding-box, .pm-bounding-box.active { display:none !important; }
+      .pm-bounding-box {
+        display:none; position:absolute;
+        border:2px solid #52b788; border-radius:4px;
+        box-shadow:0 0 0 1px rgba(74,222,128,0.3), 0 0 20px rgba(74,222,128,0.5);
+        animation:bb-pulse 1.8s ease-in-out infinite;
+        z-index:10; pointer-events:none;
+      }
+      .pm-bounding-box.confirmed { display:block; }
       .pm-bb-label {
         position:absolute; top:-20px; left:0;
         background:#52b788; color:#001a0a;
@@ -2697,7 +2704,7 @@
         </div>
       </div>
       <!-- PHS: Navy + Gray -->
-      <div class="trending-card" style="border-color:#003087;" onclick="startPreview('1985 Pullman HS Championship','9.99','','Murray Walden — QB #12')">
+      <div class="trending-card" style="border-color:#003087;" onclick="startPreview('1985 Pullman HS Championship','9.99','','Murray Walden — RB #12')">
         <div class="tc-thumb" style="background:linear-gradient(135deg,#003087 50%,#6B7280 50%);">
           🏀
           <div class="tc-play">▶</div>
@@ -5733,7 +5740,7 @@
           </div>
 
         <!-- Jim Walden — First Handoff (AI identification demo) -->
-        <div class="archive-card" data-tags="football 1967 pullman high school greyhounds murray walden first handoff" onclick="startPreview('Pullman HS — Murray Walden First Handoff, 1967','9.99','gCjr2E67DuA','Murray Walden — QB #12');event.stopPropagation();">
+        <div class="archive-card" data-tags="football 1967 pullman high school greyhounds murray walden first handoff" onclick="startPreview('Pullman HS — Murray Walden First Handoff, 1967','9.99','gCjr2E67DuA','Murray Walden — RB #12');event.stopPropagation();">
           <div class="archive-thumb" style="background:#001025;position:relative;overflow:hidden;">
             <img src="https://img.youtube.com/vi/gCjr2E67DuA/hqdefault.jpg" alt="Pullman HS 1967 Football" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;filter:sepia(0.7) brightness(0.6);" onerror="this.style.display='none';" />
             <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,10,37,0.7),rgba(0,40,10,0.3));z-index:1;"></div>
@@ -5749,7 +5756,7 @@
             </div>
             <div class="archive-title">Pullman HS — Murray's First Handoff</div>
             <div class="archive-sub">QB: Murray Walden · Pullman Greyhounds · This moment is why GloryDays exists</div>
-            <button class="preview-btn" onclick="startPreview('Pullman HS — Murray Walden First Handoff, 1967','9.99','gCjr2E67DuA','Murray Walden — QB #12');event.stopPropagation();">▶ 30-sec Preview</button>
+            <button class="preview-btn" onclick="startPreview('Pullman HS — Murray Walden First Handoff, 1967','9.99','gCjr2E67DuA','Murray Walden — RB #12');event.stopPropagation();">▶ 30-sec Preview</button>
             <button class="share-btn" onclick="openShareModal('Pullman HS — Murray Walden First Handoff, 1967');event.stopPropagation();" title="Share 30-sec preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
           </div>
           <div class="archive-card-right">
@@ -6178,7 +6185,7 @@
       setHud('🎯 #' + jerseyNum + ' isolated — confirming ' + shortName + '...');
     }, 3000);
 
-    // Phase 4: confirmed (4.5s) — show clip timestamps
+    // Phase 4: confirmed (4.5s) — show clip timestamps + highlight box
     T(function(){
       setHud('🟢 ' + shortName + ' · #' + jerseyNum + ' · 6 clips found', '#52b788');
       if (scanLine) scanLine.style.display = 'none';
@@ -6189,6 +6196,15 @@
           '<span style="color:#9aa3b0">22 other players filtered out</span>';
         detBar.classList.add('show');
       }
+      // Show confirmed highlight box — positioned for RB at handoff moment
+      var bbEl = document.getElementById('pm-bounding-box');
+      var bbLabel = document.getElementById('pm-bb-label');
+      if (bbEl) {
+        bbEl.style.top = '30%'; bbEl.style.left = '42%';
+        bbEl.style.width = '16%'; bbEl.style.height = '38%';
+        bbEl.classList.add('confirmed');
+      }
+      if (bbLabel) bbLabel.textContent = '✅ #' + jerseyNum + ' — ' + shortName;
     }, 4500);
 
     // Phase 5: counter updates
@@ -6865,6 +6881,9 @@
       <div class="pm-ai-hud" id="pm-ai-hud">🔍 Scanning footage...</div>
       <div class="pm-scan-line" id="pm-scan-line"></div>
       <div class="pm-detection-bar" id="pm-detection-bar"></div>
+      <div class="pm-bounding-box" id="pm-bounding-box">
+        <div class="pm-bb-label" id="pm-bb-label" style="position:absolute;top:-22px;left:0;background:#52b788;color:#001a0a;font-size:0.6rem;font-weight:800;padding:2px 7px;border-radius:4px 4px 0 0;white-space:nowrap;">#12</div>
+      </div>
     </div>
 
     <div class="preview-bar-wrap">
