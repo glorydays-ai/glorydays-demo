@@ -5734,7 +5734,7 @@
           </div>
 
         <!-- Jim Walden — First Handoff (AI identification demo) -->
-        <div class="archive-card" data-tags="football 1967 pullman high school greyhounds murray walden first handoff" onclick="startPreview('Pullman HS — Murray Walden First Handoff, 1967','9.99','','Murray Walden — QB #12');event.stopPropagation();">
+        <div class="archive-card" data-tags="football 1967 pullman high school greyhounds murray walden first handoff" onclick="startPreview('Pullman HS — Murray Walden First Handoff, 1967','9.99','gCjr2E67DuA','Murray Walden — QB #12');event.stopPropagation();">
           <div class="archive-thumb" style="background:#001025;position:relative;overflow:hidden;">
             <img src="https://img.youtube.com/vi/gCjr2E67DuA/hqdefault.jpg" alt="Pullman HS 1967 Football" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;filter:sepia(0.7) brightness(0.6);" onerror="this.style.display='none';" />
             <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,10,37,0.7),rgba(0,40,10,0.3));z-index:1;"></div>
@@ -5750,7 +5750,7 @@
             </div>
             <div class="archive-title">Pullman HS — Murray's First Handoff</div>
             <div class="archive-sub">QB: Murray Walden · Pullman Greyhounds · This moment is why GloryDays exists</div>
-            <button class="preview-btn" onclick="startPreview('Pullman HS — Murray Walden First Handoff, 1967','9.99','','Murray Walden — QB #12');event.stopPropagation();">▶ 30-sec Preview</button>
+            <button class="preview-btn" onclick="startPreview('Pullman HS — Murray Walden First Handoff, 1967','9.99','gCjr2E67DuA','Murray Walden — QB #12');event.stopPropagation();">▶ 30-sec Preview</button>
             <button class="share-btn" onclick="openShareModal('Pullman HS — Murray Walden First Handoff, 1967');event.stopPropagation();" title="Share 30-sec preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
           </div>
           <div class="archive-card-right">
@@ -6131,7 +6131,8 @@
     const iframeEl    = document.getElementById('pm-video-iframe');
     const placeholderEl = document.getElementById('pm-placeholder');
     if (iframeEl && videoId) {
-      iframeEl.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&mute=1&modestbranding=1&rel=0&start=10';
+      var startTime = (videoId === 'gCjr2E67DuA') ? 14 : 10;
+      iframeEl.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&mute=1&modestbranding=1&rel=0&start=' + startTime;
       iframeEl.style.display = 'block';
       if (placeholderEl) placeholderEl.style.display = 'none';
     } else if (placeholderEl) {
@@ -6818,7 +6819,7 @@
     <!-- VIDEO FRAME WITH REAL EMBED + AI BOUNDING BOX -->
     <div class="pm-video-wrap">
       <div class="pm-video-placeholder" id="pm-placeholder">▶</div>
-      <iframe id="pm-video-iframe" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      <iframe id="pm-video-iframe" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       <div class="pm-ai-hud" id="pm-ai-hud">🟢 GloryDays AI — TRACKING</div>
       <div class="pm-scan-line"></div>
       <div class="pm-bounding-box active" id="pm-bounding-box">
