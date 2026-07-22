@@ -535,7 +535,7 @@
         border:2px solid #52b788; border-radius:4px;
         box-shadow:0 0 0 1px rgba(74,222,128,0.3), 0 0 16px rgba(74,222,128,0.4);
         animation:bb-pulse 1.8s ease-in-out infinite;
-        transition: top 0.15s linear, left 0.15s linear, width 0.15s linear, height 0.15s linear;
+        transition: top 0.15s linear, left 0.15s linear, width 0.15s linear, height 0.15s linear, opacity 0.3s ease;
         top:18%; left:34%; width:18%; height:52%;
         z-index:10;
       }
@@ -6144,37 +6144,106 @@
     if (hudEl) hudEl.style.display = 'block';
     // After 1.5s, resolve player identity
     if (bbLabelEl) {
-      bbLabelEl.textContent = '🔍 SCANNING...';
-      setTimeout(function() {
-        bbLabelEl.textContent = '🎯 JERSEY #12 DETECTED';
-      }, 900);
-      setTimeout(function() {
-        bbLabelEl.textContent = playerName ? ('✅ ' + playerName) : '✅ PLAYER IDENTIFIED';
-      }, 2000);
+      bbLabelEl.textContent = '🎯 IDENTIFYING...';
     }
     if (badgeEl) badgeEl.classList.add('active');
 
-    // AI tracking — lock onto QB position with micro-jitter (realistic tracker behavior)
-    // Center box on where #12 is at t=14 in Pullman vs Selah: slightly right of center, mid-frame
-    var baseTop = 22, baseLeft = 38, baseW = 20, baseH = 48;
-    // Micro-jitter: tiny offsets simulating tracker lock (±2%)
-    var jitter = [
-      [0, 0], [1, -1], [-1, 1], [0, 2], [2, 0],
-      [-1, -1], [1, 1], [0, -2], [-2, 1], [1, 0]
-    ];
-    var jIdx = 0;
-    function moveTrackBox() {
-      if (!bbEl || !bbEl.classList.contains('active')) return;
-      var j = jitter[jIdx % jitter.length];
-      bbEl.style.top    = (baseTop  + j[0]) + '%';
-      bbEl.style.left   = (baseLeft + j[1]) + '%';
-      bbEl.style.width  = baseW + '%';
-      bbEl.style.height = baseH + '%';
-      jIdx++;
-    }
-    moveTrackBox();
+    // AI tracking state machine — box locks on, disappears when player not visible, re-acquires
     if (window._gloryTrackInterval) clearInterval(window._gloryTrackInterval);
-    window._gloryTrackInterval = setInterval(moveTrackBox, 800);
+    if (window._gloryTimers) { window._gloryTimers.forEach(function(t){ clearTimeout(t); }); window._gloryTimers = []; }
+    window._gloryTimers = window._gloryTimers || [];
+    window._gloryTimers.forEach(function(t){ clearTimeout(t); });
+    window._gloryTimers = [];
+
+    var jitter = [[0,0],[1,-1],[-1,1],[0,1],[1,0],[-1,0],[0,-1],[1,1],[-1,-1],[0,0]];
+    var jIdx = 0;
+
+    function setBox(top, left, w, h) {
+      if (!bbEl) return;
+      bbEl.style.top = top+'%'; bbEl.style.left = left+'%';
+      bbEl.style.width = w+'%'; bbEl.style.height = h+'%';
+    }
+    function showBox(top, left, w, h) {
+      setBox(top, left, w, h);
+      bbEl.style.opacity = '1';
+      bbEl.classList.add('active');
+    }
+    function hideBox() {
+      if (!bbEl) return;
+      bbEl.style.opacity = '0';
+      setTimeout(function(){ bbEl.classList.remove('active'); }, 300);
+    }
+    function setHud(txt) { if (hudEl) hudEl.textContent = txt; }
+    function setLabel(txt) { if (bbLabelEl) bbLabelEl.textContent = txt; }
+
+    function startJitter(top, left, w, h) {
+      if (window._gloryTrackInterval) clearInterval(window._gloryTrackInterval);
+      window._gloryTrackInterval = setInterval(function(){
+        if (!bbEl || bbEl.style.opacity === '0') return;
+        var j = jitter[jIdx++ % jitter.length];
+        setBox(top + j[0]*0.5, left + j[1]*0.5, w, h);
+      }, 600);
+    }
+    function stopJitter() {
+      if (window._gloryTrackInterval) clearInterval(window._gloryTrackInterval);
+    }
+
+    function T(fn, ms) {
+      window._gloryTimers.push(setTimeout(fn, ms));
+    }
+
+    // === TIMELINE (video starts at t=14 in video = t=0 here) ===
+    // 0-7s: QB in huddle / under center — LOCKED
+    setHud('🟢 GloryDays AI · #12 · Clip 1 of 6');
+    showBox(24, 37, 20, 48);
+    startJitter(24, 37, 20, 48);
+
+    // 7s: play happens, player moves — LOST briefly
+    T(function(){
+      stopJitter();
+      hideBox();
+      setHud('📡 Re-scanning... target moved');
+    }, 7000);
+
+    // 10s: re-acquire on new position (post-snap, QB dropped back)
+    T(function(){
+      showBox(35, 28, 18, 42);
+      setLabel('🎯 #12 RE-ACQUIRED');
+      setHud('🟢 GloryDays AI · #12 · tracking');
+      startJitter(35, 28, 18, 42);
+    }, 10000);
+    T(function(){ setLabel('✅ ' + (playerName || 'PLAYER IDENTIFIED')); }, 11200);
+
+    // 16s: post-play, players cluster — LOST again
+    T(function(){
+      stopJitter();
+      hideBox();
+      setHud('📡 Searching... jersey #12');
+    }, 16000);
+
+    // 19s: found again in new formation
+    T(function(){
+      showBox(28, 42, 17, 44);
+      setLabel('🎯 #12 DETECTED');
+      setHud('🟢 GloryDays AI · #12 · Clip 2 of 6');
+      startJitter(28, 42, 17, 44);
+    }, 19000);
+    T(function(){ setLabel('✅ ' + (playerName || 'PLAYER IDENTIFIED')); }, 20200);
+
+    // 25s: brief loss as camera pans
+    T(function(){
+      stopJitter();
+      hideBox();
+      setHud('📡 Camera pan — re-acquiring...');
+    }, 25000);
+
+    // 27s: final lock for remaining time
+    T(function(){
+      showBox(26, 39, 19, 46);
+      setLabel('✅ ' + (playerName || 'PLAYER IDENTIFIED'));
+      setHud('🟢 GloryDays AI · #12 · 6 clips found');
+      startJitter(26, 39, 19, 46);
+    }, 27000);
 
     overlay.classList.add('show');
     timerEl.textContent = '0:30';
