@@ -468,7 +468,7 @@
       .preview-overlay.show { display:flex; }
       .preview-modal {
         background:#0f1620; border:1px solid #2a3548; border-radius:18px;
-        padding:36px 40px; max-width:480px; width:90%; text-align:center;
+        padding:28px 32px; max-width:680px; width:95%; text-align:center;
       }
       .preview-modal .pm-icon { font-size:3rem; margin-bottom:12px; }
       .preview-modal h3 { color:#e0e8f0; margin:0 0 10px; font-size:1.3rem; }
@@ -519,29 +519,62 @@
       .pm-video-wrap {
         position:relative; width:100%; padding-top:56.25%; /* 16:9 */
         background:#000d1a; border-radius:10px; overflow:hidden;
-        margin:14px 0 8px;
+        margin:10px 0 8px;
       }
       .pm-video-placeholder {
         position:absolute; inset:0; display:flex; align-items:center;
         justify-content:center; color:#2a4a60; font-size:3rem;
       }
+      #pm-video-iframe {
+        display:none; position:absolute; inset:0;
+        width:100%; height:100%; border:none;
+      }
+      #pm-video-iframe.active { display:block; }
       .pm-bounding-box {
         display:none; position:absolute;
-        border:3px solid #52b788; border-radius:4px;
+        border:2px solid #52b788; border-radius:4px;
         box-shadow:0 0 0 1px rgba(74,222,128,0.3), 0 0 16px rgba(74,222,128,0.4);
-        animation:bb-pulse 1.8s ease-in-out infinite;
-        top:22%; left:38%; width:16%; height:40%;
+        animation:bb-pulse 1.8s ease-in-out infinite, bb-drift 4s ease-in-out infinite;
+        top:18%; left:34%; width:18%; height:52%;
+        z-index:10;
       }
       .pm-bounding-box.active { display:block; }
       .pm-bb-label {
-        position:absolute; top:-22px; left:0;
+        position:absolute; top:-20px; left:0;
         background:#52b788; color:#001a0a;
-        font-size:0.62rem; font-weight:800; padding:2px 7px;
-        border-radius:4px 4px 0 0; white-space:nowrap;
+        font-size:0.6rem; font-weight:800; padding:2px 6px;
+        border-radius:4px 4px 0 0; white-space:nowrap; letter-spacing:0.5px;
       }
+      .pm-bb-corner {
+        position:absolute; width:8px; height:8px; border-color:#e8b820;
+        border-style:solid;
+      }
+      .pm-bb-corner.tl { top:-2px; left:-2px; border-width:2px 0 0 2px; }
+      .pm-bb-corner.tr { top:-2px; right:-2px; border-width:2px 2px 0 0; }
+      .pm-bb-corner.bl { bottom:-2px; left:-2px; border-width:0 0 2px 2px; }
+      .pm-bb-corner.br { bottom:-2px; right:-2px; border-width:0 2px 2px 0; }
+      .pm-scan-line {
+        position:absolute; left:0; right:0; height:2px;
+        background:linear-gradient(90deg,transparent,rgba(82,183,136,0.6),transparent);
+        animation:scan 2.5s linear infinite;
+      }
+      @keyframes scan { 0%{top:0%} 100%{top:100%} }
       @keyframes bb-pulse {
-        0%,100% { box-shadow:0 0 0 1px rgba(74,222,128,0.3), 0 0 16px rgba(74,222,128,0.4); }
-        50%      { box-shadow:0 0 0 2px rgba(74,222,128,0.5), 0 0 28px rgba(74,222,128,0.6); }
+        0%,100% { box-shadow:0 0 0 1px rgba(74,222,128,0.3), 0 0 16px rgba(74,222,128,0.4); border-color:#52b788; }
+        50%      { box-shadow:0 0 0 2px rgba(74,222,128,0.5), 0 0 28px rgba(74,222,128,0.7); border-color:#7effc0; }
+      }
+      @keyframes bb-drift {
+        0%,100% { transform:translate(0,0); }
+        25%      { transform:translate(2px,-1px); }
+        50%      { transform:translate(-1px,2px); }
+        75%      { transform:translate(1px,1px); }
+      }
+      .pm-ai-hud {
+        position:absolute; top:6px; left:6px;
+        background:rgba(0,10,20,0.82); border:1px solid #52b788;
+        border-radius:5px; padding:4px 8px; font-size:0.58rem;
+        color:#52b788; font-weight:700; letter-spacing:0.5px;
+        font-family:monospace; z-index:11;
       }
       .pm-highlight-badge {
         display:none; align-items:center; gap:8px;
@@ -2653,7 +2686,7 @@
     </div>
     <div class="trending-grid">
       <!-- WSU: Crimson + Gray -->
-      <div class="trending-card" style="border-color:#981E32;" onclick="startPreview('1981 WSU Holiday Bowl','9.99')">
+      <div class="trending-card" style="border-color:#981E32;" onclick="startPreview('1981 WSU Holiday Bowl','9.99','','')">
         <div class="tc-thumb" style="background:linear-gradient(135deg,#981E32 50%,#5C6368 50%);">
           🏈
           <div class="tc-play">▶</div>
@@ -2665,7 +2698,7 @@
         </div>
       </div>
       <!-- PHS: Navy + Gray -->
-      <div class="trending-card" style="border-color:#003087;" onclick="startPreview('1985 Pullman HS Championship','9.99')">
+      <div class="trending-card" style="border-color:#003087;" onclick="startPreview('1985 Pullman HS Championship','9.99','','Jim Walden — QB #12')">
         <div class="tc-thumb" style="background:linear-gradient(135deg,#003087 50%,#6B7280 50%);">
           🏀
           <div class="tc-play">▶</div>
@@ -2677,7 +2710,7 @@
         </div>
       </div>
       <!-- NU: Scarlet + White -->
-      <div class="trending-card" style="border-color:#D00000;" onclick="startPreview('Nebraska Rose Bowl 1995','9.99')">
+      <div class="trending-card" style="border-color:#D00000;" onclick="startPreview('Nebraska Rose Bowl 1995','9.99','','')">
         <div class="tc-thumb" style="background:linear-gradient(135deg,#D00000 50%,#FFFFFF 50%);">
           🏈
           <div class="tc-play">▶</div>
@@ -4131,6 +4164,51 @@
             </div>
           </div>
           <div class="archive-grid" id="wsu-archive">
+        <!-- TIMM ROSENBACH CARDS — Real YouTube videos wired up -->
+        <div class="archive-card" data-tags="football 1988 wsu cougs timm rosenbach ucla number 1 upset jim walden" onclick="startPreview('WSU vs #1 UCLA — Oct 29, 1988','9.99','PPG-frgjpaY','Timm Rosenbach — QB #9');event.stopPropagation();">
+          <div class="archive-thumb" style="background:#1a0d1a;position:relative;overflow:hidden;">
+            <img src="https://img.youtube.com/vi/PPG-frgjpaY/hqdefault.jpg" alt="WSU vs #1 UCLA 1988" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;" onerror="this.style.display='none';" />
+            <div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            <div style="position:absolute;top:6px;left:6px;background:#C8A96E;color:#1a1208;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;z-index:2;">⭐ FEATURED</div>
+          </div>
+          <div class="archive-info">
+            <div class="archive-meta">
+              <span class="archive-tag" style="background:#981E32;color:#fff;">FOOTBALL</span>
+              <span class="archive-tag" style="background:#1e2535;color:#b0b8c0;">1988</span>
+              <span class="archive-tag" style="background:#2a3548;color:#C8A96E;">🎯 AI HIGHLIGHT</span>
+            </div>
+            <div class="archive-title">WSU Upsets #1 UCLA — October 29, 1988</div>
+            <div class="archive-sub">QB: Timm Rosenbach · Coach: Jim Walden · ABC Sports — Keith Jackson & Bob Griese</div>
+            <button class="preview-btn" onclick="startPreview('WSU vs #1 UCLA — Oct 29, 1988','9.99','PPG-frgjpaY','Timm Rosenbach — QB #9');event.stopPropagation();">▶ 30-sec Preview</button>
+            <button class="share-btn" onclick="openShareModal('WSU vs #1 UCLA — October 29, 1988');event.stopPropagation();" title="Share 30-sec preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
+          </div>
+          <div class="archive-card-right">
+            <div class="archive-duration">2:31:44</div>
+            <button class="locker-btn" onclick="toggleLocker(this)">&#x1F512; Save to My Locker</button>
+          </div>
+        </div>
+        <div class="archive-card" data-tags="football 1988 apple cup wsu washington huskies timm rosenbach jim walden" onclick="startPreview('1988 Apple Cup — WSU 32, UW 31','9.99','y9BqUM_2q1s','Timm Rosenbach — QB #9');event.stopPropagation();">
+          <div class="archive-thumb" style="background:#1a0d1a;position:relative;overflow:hidden;">
+            <img src="https://img.youtube.com/vi/y9BqUM_2q1s/hqdefault.jpg" alt="1988 Apple Cup WSU vs Washington" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;" onerror="this.style.display='none';" />
+            <div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            <div style="position:absolute;top:6px;left:6px;background:#C8A96E;color:#1a1208;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;z-index:2;">⭐ FEATURED</div>
+          </div>
+          <div class="archive-info">
+            <div class="archive-meta">
+              <span class="archive-tag" style="background:#981E32;color:#fff;">FOOTBALL</span>
+              <span class="archive-tag" style="background:#1e2535;color:#b0b8c0;">1988</span>
+              <span class="archive-tag" style="background:#2a3548;color:#C8A96E;">🎯 AI HIGHLIGHT</span>
+            </div>
+            <div class="archive-title">1988 Apple Cup — WSU 32, Washington 31</div>
+            <div class="archive-sub">QB: Timm Rosenbach · Coach: Jim Walden · Martin Stadium, Pullman</div>
+            <button class="preview-btn" onclick="startPreview('1988 Apple Cup — WSU 32, UW 31','9.99','y9BqUM_2q1s','Timm Rosenbach — QB #9');event.stopPropagation();">▶ 30-sec Preview</button>
+            <button class="share-btn" onclick="openShareModal('1988 Apple Cup — WSU 32, Washington 31');event.stopPropagation();" title="Share 30-sec preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
+          </div>
+          <div class="archive-card-right">
+            <div class="archive-duration">3:08:21</div>
+            <button class="locker-btn" onclick="toggleLocker(this)">&#x1F512; Save to My Locker</button>
+          </div>
+        </div>
         <div class="archive-card" data-tags="football 1981 holiday bowl byu coach jim walden jack thompson">
           <div class="archive-thumb" style="background:#200810;"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Martin_Stadium_west_grandstand.jpg" alt="Martin Stadium — WSU 1981 Holiday Bowl" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;" onerror="this.style.display='none';" /><div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
@@ -4141,7 +4219,7 @@
             <div class="archive-title">WSU vs BYU — 1981 Holiday Bowl Highlight</div>
             <div class="archive-sub">Coach: Jim Walden · Players: Rick Johnson · Holiday Bowl, San Diego</div>
           
-            <button class="preview-btn" onclick="startPreview('WSU vs BYU — 1981 Holiday Bowl Highlight','9.99');event.stopPropagation();">▶ 30-sec Preview</button>
+            <button class="preview-btn" onclick="startPreview('WSU vs BYU — 1981 Holiday Bowl Highlight','9.99','','Coach Jim Walden — WSU Cougars');event.stopPropagation();">▶ 30-sec Preview</button>
             <button class="share-btn" onclick="openShareModal('WSU vs BYU — 1981 Holiday Bowl Highlight');event.stopPropagation();" title="Share 30-sec preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
           </div>
           <div class="archive-card-right">
@@ -4149,7 +4227,7 @@
             <button class="locker-btn" onclick="toggleLocker(this)">&#x1F512; Save to My Locker</button>
           </div>
         </div>
-        <div class="archive-card" data-tags="football 1998 rose bowl michigan ryan leaf coach mike price" onclick="startPreview('WSU vs Michigan — 1998 Rose Bowl','9.99');event.stopPropagation();">
+        <div class="archive-card" data-tags="football 1998 rose bowl michigan ryan leaf coach mike price" onclick="startPreview('WSU vs Michigan — 1998 Rose Bowl','9.99','ksy7jRg__Yo','Ryan Leaf — QB #16');event.stopPropagation();">
           <div class="archive-thumb" style="background:#200810;"><img src="https://img.youtube.com/vi/ksy7jRg__Yo/hqdefault.jpg" alt="WSU vs Michigan 1998 Rose Bowl" onerror="this.style.display='none';" /><div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
           <div class="archive-info">
             <div class="archive-meta">
@@ -4159,7 +4237,7 @@
             <div class="archive-title">WSU vs Michigan — 1998 Rose Bowl</div>
             <div class="archive-sub">Coach: Mike Price · QB: Ryan Leaf · Rose Bowl, Pasadena · Jan 1, 1998</div>
 
-            <button class="preview-btn" onclick="startPreview('WSU vs Michigan — 1998 Rose Bowl','9.99');event.stopPropagation();">▶ 30-sec Preview</button>
+            <button class="preview-btn" onclick="startPreview('WSU vs Michigan — 1998 Rose Bowl','9.99','ksy7jRg__Yo','Ryan Leaf — QB #16');event.stopPropagation();">▶ 30-sec Preview</button>
             <button class="share-btn" onclick="openShareModal('WSU vs Michigan — 1998 Rose Bowl');event.stopPropagation();" title="Share 30-sec preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
           </div>
           <div class="archive-card-right">
@@ -4177,7 +4255,7 @@
             <div class="archive-title">Apple Cup 2003 — WSU vs Washington Huskies</div>
             <div class="archive-sub">Coach: Bill Doba · Martin Stadium, Pullman</div>
           
-            <button class="preview-btn" onclick="startPreview('WSU vs BYU — 1981 Holiday Bowl Highlight','9.99');event.stopPropagation();">▶ 30-sec Preview</button>
+            <button class="preview-btn" onclick="startPreview('WSU vs BYU — 1981 Holiday Bowl Highlight','9.99','','Coach Jim Walden — WSU Cougars');event.stopPropagation();">▶ 30-sec Preview</button>
             <button class="share-btn" onclick="openShareModal('WSU vs BYU — 1981 Holiday Bowl Highlight');event.stopPropagation();" title="Share 30-sec preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
           </div>
           <div class="archive-card-right">
@@ -4195,7 +4273,7 @@
             <div class="archive-title">WSU Men's Basketball — 1994 Pac-10 Tournament</div>
             <div class="archive-sub">Coach: Kelvin Sampson · Beasley Coliseum</div>
           
-            <button class="preview-btn" onclick="startPreview('WSU vs BYU — 1981 Holiday Bowl Highlight','9.99');event.stopPropagation();">▶ 30-sec Preview</button>
+            <button class="preview-btn" onclick="startPreview('WSU vs BYU — 1981 Holiday Bowl Highlight','9.99','','Coach Jim Walden — WSU Cougars');event.stopPropagation();">▶ 30-sec Preview</button>
             <button class="share-btn" onclick="openShareModal('WSU vs BYU — 1981 Holiday Bowl Highlight');event.stopPropagation();" title="Share 30-sec preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
           </div>
           <div class="archive-card-right">
@@ -4213,7 +4291,7 @@
             <div class="archive-title">WSU Women's Basketball — 2007 NCAA Tournament</div>
             <div class="archive-sub">Coach: Kamie Ethridge · Beasley Coliseum</div>
           
-            <button class="preview-btn" onclick="startPreview('WSU vs BYU — 1981 Holiday Bowl Highlight','9.99');event.stopPropagation();">▶ 30-sec Preview</button>
+            <button class="preview-btn" onclick="startPreview('WSU vs BYU — 1981 Holiday Bowl Highlight','9.99','','Coach Jim Walden — WSU Cougars');event.stopPropagation();">▶ 30-sec Preview</button>
             <button class="share-btn" onclick="openShareModal('WSU vs BYU — 1981 Holiday Bowl Highlight');event.stopPropagation();" title="Share 30-sec preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
           </div>
           <div class="archive-card-right">
@@ -4231,7 +4309,7 @@
             <div class="archive-title">WSU Baseball — 1988 Conference Championship</div>
             <div class="archive-sub">Coach: Bobo Brayton · Bailey-Brayton Field</div>
           
-            <button class="preview-btn" onclick="startPreview('WSU vs BYU — 1981 Holiday Bowl Highlight','9.99');event.stopPropagation();">▶ 30-sec Preview</button>
+            <button class="preview-btn" onclick="startPreview('WSU vs BYU — 1981 Holiday Bowl Highlight','9.99','','Coach Jim Walden — WSU Cougars');event.stopPropagation();">▶ 30-sec Preview</button>
             <button class="share-btn" onclick="openShareModal('WSU vs BYU — 1981 Holiday Bowl Highlight');event.stopPropagation();" title="Share 30-sec preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
           </div>
           <div class="archive-card-right">
@@ -5654,6 +5732,31 @@
             <div class="phs-yt-title">Pullman vs Selah</div>
             <div class="phs-yt-sub">1985 State Playoff · Football</div>
           </div>
+
+        <!-- Jim Walden — First Handoff (AI identification demo) -->
+        <div class="archive-card" data-tags="football 1967 pullman high school greyhounds jim walden first handoff" onclick="startPreview('Pullman HS — Jim Walden First Handoff, 1967','9.99','','Jim Walden — QB #12');event.stopPropagation();">
+          <div class="archive-thumb" style="background:#001025;position:relative;overflow:hidden;">
+            <img src="https://img.youtube.com/vi/gCjr2E67DuA/hqdefault.jpg" alt="Pullman HS 1967 Football" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;filter:sepia(0.7) brightness(0.6);" onerror="this.style.display='none';" />
+            <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,10,37,0.7),rgba(0,40,10,0.3));z-index:1;"></div>
+            <div class="archive-play" style="z-index:2;"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            <div style="position:absolute;top:6px;left:6px;background:#52b788;color:#001a0a;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;z-index:3;">⭐ THIS IS ME</div>
+            <div style="position:absolute;bottom:6px;right:6px;background:rgba(0,10,20,0.85);border:1px solid #52b788;border-radius:4px;padding:2px 6px;font-size:9px;color:#52b788;font-weight:700;font-family:monospace;z-index:3;">🎯 AI HIGHLIGHT</div>
+          </div>
+          <div class="archive-info">
+            <div class="archive-meta">
+              <span class="archive-tag" style="background:#003087;color:#fff;">FOOTBALL</span>
+              <span class="archive-tag" style="background:#1e2535;color:#b0b8c0;">1967</span>
+              <span class="archive-tag" style="background:#2a3548;color:#C8A96E;">🎯 AI HIGHLIGHT</span>
+            </div>
+            <div class="archive-title">Pullman HS — Jim Walden's First Handoff</div>
+            <div class="archive-sub">QB: Jim Walden · Pullman Greyhounds · This moment is why GloryDays exists</div>
+            <button class="preview-btn" onclick="startPreview('Pullman HS — Jim Walden First Handoff, 1967','9.99','','Jim Walden — QB #12');event.stopPropagation();">▶ 30-sec Preview</button>
+            <button class="share-btn" onclick="openShareModal('Pullman HS — Jim Walden First Handoff, 1967');event.stopPropagation();" title="Share 30-sec preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
+          </div>
+          <div class="archive-card-right">
+            <div class="archive-duration">1:52:14</div>
+            <button class="locker-btn" onclick="toggleLocker(this)">&#x1F512; Save to My Locker</button>
+          </div>
         </div>
 
         <div class="archive-card" data-tags="football 1985 season greyhounds coach johnson deer park playoff">
@@ -6014,31 +6117,42 @@
   let previewInterval = null;
   let previewSeconds = 30;
 
-  function startPreview(title, price) {
+  function startPreview(title, price, videoId, playerName) {
     previewSeconds = 30;
-    const overlay   = document.getElementById('preview-overlay');
-    const timerEl   = document.getElementById('preview-timer');
-    const barEl     = document.getElementById('preview-progress-bar');
-    const titleEl   = document.getElementById('preview-title');
-    const priceEl   = document.getElementById('preview-price');
+    const overlay     = document.getElementById('preview-overlay');
+    const timerEl     = document.getElementById('preview-timer');
+    const barEl       = document.getElementById('preview-progress-bar');
+    const titleEl     = document.getElementById('preview-title');
+    const priceEl     = document.getElementById('preview-price');
     if (titleEl) titleEl.textContent = title || 'This Video';
     if (priceEl) priceEl.textContent = price ? '$' + price : 'FREE';
 
-    // Jersey # AI highlight — check if a jersey number was entered in any nal-jersey field
-    const jerseyInputs = document.querySelectorAll('#nal-jersey');
-    let jerseyNum = '';
-    jerseyInputs.forEach(function(el) { if (el.value.trim()) jerseyNum = el.value.trim(); });
-    const bbEl      = document.getElementById('pm-bounding-box');
-    const badgeEl   = document.getElementById('pm-highlight-badge');
-    const bbJerseyEl = document.getElementById('pm-bb-jersey');
-    if (jerseyNum && bbEl && badgeEl) {
-      if (bbJerseyEl) bbJerseyEl.textContent = jerseyNum;
-      bbEl.classList.add('active');
-      badgeEl.classList.add('active');
-    } else {
-      if (bbEl) bbEl.classList.remove('active');
-      if (badgeEl) badgeEl.classList.remove('active');
+    // Inject YouTube iframe if videoId provided
+    const iframeEl    = document.getElementById('pm-video-iframe');
+    const placeholderEl = document.getElementById('pm-placeholder');
+    if (iframeEl && videoId) {
+      iframeEl.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&mute=1&modestbranding=1&rel=0&start=10';
+      iframeEl.style.display = 'block';
+      if (placeholderEl) placeholderEl.style.display = 'none';
+    } else if (placeholderEl) {
+      placeholderEl.style.display = 'flex';
     }
+
+    // AI bounding box — always show, update label with playerName
+    const bbEl      = document.getElementById('pm-bounding-box');
+    const bbLabelEl = document.getElementById('pm-bb-label');
+    const badgeEl   = document.getElementById('pm-highlight-badge');
+    const hudEl     = document.getElementById('pm-ai-hud');
+    if (bbEl) bbEl.classList.add('active');
+    if (hudEl) hudEl.style.display = 'block';
+    // After 1.5s, resolve player identity
+    if (bbLabelEl) {
+      bbLabelEl.textContent = '🎯 IDENTIFYING...';
+      setTimeout(function() {
+        bbLabelEl.textContent = playerName ? ('✅ ' + playerName) : '✅ PLAYER IDENTIFIED';
+      }, 1500);
+    }
+    if (badgeEl) badgeEl.classList.add('active');
 
     overlay.classList.add('show');
     timerEl.textContent = '0:30';
@@ -6062,6 +6176,10 @@
 
   function closePreview() {
     if (previewInterval) clearInterval(previewInterval);
+    const iframeEl = document.getElementById('pm-video-iframe');
+    if (iframeEl) { iframeEl.src = ''; iframeEl.style.display = 'none'; }
+    const placeholderEl = document.getElementById('pm-placeholder');
+    if (placeholderEl) placeholderEl.style.display = 'flex';
     document.getElementById('preview-overlay').classList.remove('show');
   }
 
@@ -6357,7 +6475,7 @@
             <div class="archive-title">WSU vs BYU — 1981 Holiday Bowl Highlight</div>
             <div class="archive-sub">Saved from WSU Cougars archive</div>
           
-            <button class="preview-btn" onclick="startPreview('WSU vs BYU — 1981 Holiday Bowl Highlight','9.99');event.stopPropagation();">▶ 30-sec Preview</button>
+            <button class="preview-btn" onclick="startPreview('WSU vs BYU — 1981 Holiday Bowl Highlight','9.99','','Coach Jim Walden — WSU Cougars');event.stopPropagation();">▶ 30-sec Preview</button>
             <button class="share-btn" onclick="openShareModal('WSU vs BYU — 1981 Holiday Bowl Highlight');event.stopPropagation();" title="Share 30-sec preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
           </div>
           <div class="archive-card-right">
@@ -6377,7 +6495,7 @@
             <div class="archive-title">Iowa State 1944 Sweet Sixteen — Full Game</div>
             <div class="archive-sub">Saved from Iowa State Cyclones archive</div>
           
-            <button class="preview-btn" onclick="startPreview('WSU vs BYU — 1981 Holiday Bowl Highlight','9.99');event.stopPropagation();">▶ 30-sec Preview</button>
+            <button class="preview-btn" onclick="startPreview('WSU vs BYU — 1981 Holiday Bowl Highlight','9.99','','Coach Jim Walden — WSU Cougars');event.stopPropagation();">▶ 30-sec Preview</button>
             <button class="share-btn" onclick="openShareModal('WSU vs BYU — 1981 Holiday Bowl Highlight');event.stopPropagation();" title="Share 30-sec preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
           </div>
           <div class="archive-card-right">
@@ -6697,11 +6815,16 @@
       🟢 AI Player Highlight Active &nbsp;<span>Your jersey number was detected in this clip</span>
     </div>
 
-    <!-- SIMULATED VIDEO FRAME WITH BOUNDING BOX -->
+    <!-- VIDEO FRAME WITH REAL EMBED + AI BOUNDING BOX -->
     <div class="pm-video-wrap">
-      <div class="pm-video-placeholder">▶</div>
-      <div class="pm-bounding-box" id="pm-bounding-box">
-        <div class="pm-bb-label">YOU — #<span id="pm-bb-jersey">21</span></div>
+      <div class="pm-video-placeholder" id="pm-placeholder">▶</div>
+      <iframe id="pm-video-iframe" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      <div class="pm-ai-hud" id="pm-ai-hud">🟢 GloryDays AI — TRACKING</div>
+      <div class="pm-scan-line"></div>
+      <div class="pm-bounding-box active" id="pm-bounding-box">
+        <div class="pm-bb-corner tl"></div><div class="pm-bb-corner tr"></div>
+        <div class="pm-bb-corner bl"></div><div class="pm-bb-corner br"></div>
+        <div class="pm-bb-label" id="pm-bb-label">🎯 IDENTIFYING...</div>
       </div>
     </div>
 
