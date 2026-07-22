@@ -169,7 +169,7 @@
     @media(max-width:440px){ .archive-grid { grid-template-columns:1fr; } }
     .archive-card { background:#0d1117; border:1px solid #1e2535; border-radius:12px; padding:0; display:flex; flex-direction:column; cursor:pointer;
       transition:border-color 0.22s, box-shadow 0.22s, transform 0.15s; overflow:hidden; position:relative; }
-    .archive-card:hover { transform:translateY(-3px); border-color:var(--primary,#d4a855); box-shadow:0 6px 28px rgba(0,0,0,0.5), 0 0 0 1px var(--primary,#d4a855); }
+    .archive-card:hover { transform:translateY(-3px); border-color:var(--primary,#d4a855); box-shadow:0 0 0 2px var(--primary,#d4a855), 0 0 18px rgba(212,168,85,0.25); }
     /* Thumbnail */
     .archive-thumb { width:100%; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; font-size:2.6rem;
       flex-shrink:0; position:relative; overflow:hidden; color:transparent;
@@ -6151,6 +6151,97 @@
   let previewInterval = null;
   let previewSeconds = 30;
 
+  // ── YouTube IFrame Player API ──────────────────────────────────────────
+  var tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
+
+  var _ytPlayer = null;
+  var _ytPollInterval = null;
+  var _ytVideoId = null;
+  var _ytStartTime = 14;
+
+  window.onYouTubeIframeAPIReady = function() {
+    // API ready — player created on demand in startPreview
+  };
+
+  function createYTPlayer(videoId, startTime) {
+    _ytVideoId = videoId;
+    _ytStartTime = startTime || 14;
+    var playerDiv = document.getElementById('pm-yt-player');
+    if (!playerDiv) return;
+    playerDiv.innerHTML = '';
+    playerDiv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;';
+    if (_ytPlayer && _ytPlayer.destroy) { try { _ytPlayer.destroy(); } catch(e){} }
+    _ytPlayer = new YT.Player('pm-yt-player', {
+      width: '100%', height: '100%',
+      videoId: videoId,
+      playerVars: { autoplay:1, mute:1, start: startTime||14,
+                    rel:0, modestbranding:1, controls:1 },
+      events: { onReady: function(e){ e.target.playVideo(); startBoxSync(); } }
+    });
+  }
+
+  function destroyYTPlayer() {
+    if (_ytPollInterval) clearInterval(_ytPollInterval);
+    if (_ytPlayer && _ytPlayer.destroy) { try { _ytPlayer.destroy(); } catch(e){} }
+    _ytPlayer = null;
+    var div = document.getElementById('pm-yt-player');
+    if (div) div.innerHTML = '';
+  }
+
+  // ── Time-coded bounding box for Murray Walden #12 (Pullman vs Selah, t=14s onward) ──
+  // [videoTime, top%, left%, width%, height%, label]
+  // These positions are approximate — Murray can refine by reporting where he is
+  var _murrayBoxes = [
+    [14.0, 8,  38, 14, 32, '✅ #12 Murray — #12 detected'],
+    [15.5, 10, 35, 14, 33, '🔒 Re-ID: tracking by appearance'],
+    [17.0, 14, 31, 13, 31, '🔒 Re-ID: #12 turned — tracking'],
+    [18.5, 18, 28, 14, 33, '🔒 Re-ID: maintaining lock'],
+    [20.0, 22, 33, 13, 30, '✅ #12 re-confirmed'],
+    [22.0, 19, 38, 14, 32, '🔒 Re-ID: tracking'],
+    [24.0, 15, 42, 13, 31, '🔒 Re-ID: tracking'],
+    [26.0, 12, 36, 14, 33, '✅ #12 visible — confirmed'],
+    [28.0,  9, 32, 15, 34, '🔒 Re-ID: tracking by appearance'],
+    [30.0, 16, 40, 13, 30, '✅ #12 re-confirmed'],
+    [32.0, 20, 35, 14, 32, '🔒 Re-ID: tracking'],
+    [34.0, 14, 30, 15, 33, '🔒 Re-ID: tracking'],
+    [36.0, 10, 38, 14, 32, '✅ #12 confirmed'],
+    [38.0,  8, 42, 13, 31, '🔒 Re-ID: tracking'],
+    [40.0, 13, 36, 14, 33, '✅ #12 detected'],
+    [42.0, 18, 32, 13, 30, '🔒 Re-ID: tracking'],
+    [44.0,  9, 35, 14, 32, '✅ #12 re-confirmed'],
+  ];
+
+  function startBoxSync() {
+    if (_ytPollInterval) clearInterval(_ytPollInterval);
+    var bbEl = document.getElementById('pm-bounding-box');
+    var bbLabel = document.getElementById('pm-bb-label');
+    if (!bbEl) return;
+
+    _ytPollInterval = setInterval(function() {
+      if (!_ytPlayer || typeof _ytPlayer.getCurrentTime !== 'function') return;
+      var t = _ytPlayer.getCurrentTime();
+      // Find the closest keyframe at or before current time
+      var boxes = (_ytVideoId === 'gCjr2E67DuA') ? _murrayBoxes : null;
+      if (!boxes) return;
+      var box = null;
+      for (var i = boxes.length - 1; i >= 0; i--) {
+        if (t >= boxes[i][0]) { box = boxes[i]; break; }
+      }
+      if (box) {
+        bbEl.style.top    = box[1] + '%';
+        bbEl.style.left   = box[2] + '%';
+        bbEl.style.width  = box[3] + '%';
+        bbEl.style.height = box[4] + '%';
+        if (bbLabel) bbLabel.textContent = box[5];
+        bbEl.classList.add('confirmed');
+      } else {
+        bbEl.classList.remove('confirmed');
+      }
+    }, 200);
+  }
+
   function startPreview(title, price, videoId, playerName) {
     previewSeconds = 30;
     const overlay     = document.getElementById('preview-overlay');
@@ -6213,19 +6304,7 @@
       setHud('🎯 #' + jerseyNum + ' isolated — confirming ' + shortName + '...');
     }, 3000);
 
-    // Helper — flash box at position for 2.5s then hide
-    function flashBox(top, left, w, h, label) {
-      var bbEl = document.getElementById('pm-bounding-box');
-      var bbLabel = document.getElementById('pm-bb-label');
-      if (!bbEl) return;
-      bbEl.style.top = top+'%'; bbEl.style.left = left+'%';
-      bbEl.style.width = w+'%'; bbEl.style.height = h+'%';
-      if (bbLabel) bbLabel.textContent = label;
-      bbEl.classList.add('confirmed');
-      T(function(){ if(bbEl) bbEl.classList.remove('confirmed'); }, 2500);
-    }
-
-    // Phase 4: confirmed (4.5s) — show clip bar + first flash
+    // Phase 4: confirmed (4.5s) — show clip bar; box is now time-synced via YT API poll
     T(function(){
       setHud('🟢 ' + shortName + ' · #' + jerseyNum + ' · 6 clips found', '#52b788');
       if (scanLine) scanLine.style.display = 'none';
@@ -6236,23 +6315,12 @@
           '<span style="color:#9aa3b0">22 other players filtered out</span>';
         detBar.classList.add('show');
       }
-      // Flash at clip 1 position — Murray is upper-center in frame at handoff
-      flashBox(10, 36, 15, 35, '✅ #' + jerseyNum + ' · ' + shortName);
     }, 4500);
 
-    // Phase 5 — brief flash at each subsequent clip detection
-    T(function(){
-      setHud('🟢 ' + shortName + ' · clip 2 of 6');
-      flashBox(12, 40, 14, 33, '✅ #' + jerseyNum + ' clip 2');
-    }, 10000);
-    T(function(){
-      setHud('🟢 ' + shortName + ' · clip 3 of 6');
-      flashBox(8, 32, 15, 34, '✅ #' + jerseyNum + ' clip 3');
-    }, 18000);
-    T(function(){
-      setHud('🟢 ' + shortName + ' · clip 4 of 6');
-      flashBox(14, 38, 14, 32, '✅ #' + jerseyNum + ' clip 4');
-    }, 24000);
+    // Phase 5 — HUD updates as clips play (box position driven by YT API time-sync above)
+    T(function(){ setHud('🔒 Re-ID: tracking #' + jerseyNum + ' by appearance'); }, 10000);
+    T(function(){ setHud('✅ #' + jerseyNum + ' re-confirmed · clip 3'); }, 18000);
+    T(function(){ setHud('🔒 Re-ID: tracking · clip 4 of 6'); }, 24000);
 
     overlay.classList.add('show');
     timerEl.textContent = '0:30';
@@ -6277,10 +6345,11 @@
   function closePreview() {
     if (previewInterval) clearInterval(previewInterval);
     if (window._gloryTrackInterval) clearInterval(window._gloryTrackInterval);
-    const iframeEl = document.getElementById('pm-video-iframe');
-    if (iframeEl) { iframeEl.src = ''; iframeEl.style.display = 'none'; }
+    destroyYTPlayer();
     const placeholderEl = document.getElementById('pm-placeholder');
     if (placeholderEl) placeholderEl.style.display = 'flex';
+    var bbEl2 = document.getElementById('pm-bounding-box');
+    if (bbEl2) bbEl2.classList.remove('confirmed');
     document.getElementById('preview-overlay').classList.remove('show');
   }
 
@@ -6959,7 +7028,7 @@
     <!-- VIDEO FRAME WITH REAL EMBED + AI BOUNDING BOX -->
     <div class="pm-video-wrap">
       <div class="pm-video-placeholder" id="pm-placeholder">▶</div>
-      <iframe id="pm-video-iframe" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <div id="pm-yt-player"></div>
       <div class="pm-ai-hud" id="pm-ai-hud">🔍 Scanning footage...</div>
       <div class="pm-scan-line" id="pm-scan-line"></div>
       <div class="pm-detection-bar" id="pm-detection-bar"></div>
