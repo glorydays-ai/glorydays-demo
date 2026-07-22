@@ -6213,7 +6213,19 @@
       setHud('🎯 #' + jerseyNum + ' isolated — confirming ' + shortName + '...');
     }, 3000);
 
-    // Phase 4: confirmed (4.5s) — show clip timestamps + highlight box
+    // Helper — flash box at position for 2.5s then hide
+    function flashBox(top, left, w, h, label) {
+      var bbEl = document.getElementById('pm-bounding-box');
+      var bbLabel = document.getElementById('pm-bb-label');
+      if (!bbEl) return;
+      bbEl.style.top = top+'%'; bbEl.style.left = left+'%';
+      bbEl.style.width = w+'%'; bbEl.style.height = h+'%';
+      if (bbLabel) bbLabel.textContent = label;
+      bbEl.classList.add('confirmed');
+      T(function(){ if(bbEl) bbEl.classList.remove('confirmed'); }, 2500);
+    }
+
+    // Phase 4: confirmed (4.5s) — show clip bar + first flash
     T(function(){
       setHud('🟢 ' + shortName + ' · #' + jerseyNum + ' · 6 clips found', '#52b788');
       if (scanLine) scanLine.style.display = 'none';
@@ -6224,21 +6236,23 @@
           '<span style="color:#9aa3b0">22 other players filtered out</span>';
         detBar.classList.add('show');
       }
-      // Show confirmed highlight box — positioned for RB at handoff moment
-      var bbEl = document.getElementById('pm-bounding-box');
-      var bbLabel = document.getElementById('pm-bb-label');
-      if (bbEl) {
-        bbEl.style.top = '30%'; bbEl.style.left = '42%';
-        bbEl.style.width = '16%'; bbEl.style.height = '38%';
-        bbEl.classList.add('confirmed');
-      }
-      if (bbLabel) bbLabel.textContent = '✅ #' + jerseyNum + ' — ' + shortName;
+      // Flash at clip 1 position — Murray is upper-center in frame at handoff
+      flashBox(10, 36, 15, 35, '✅ #' + jerseyNum + ' · ' + shortName);
     }, 4500);
 
-    // Phase 5: counter updates
-    T(function(){ setHud('🟢 ' + shortName + ' · clip 2 of 6 · other numbers ignored'); }, 10000);
-    T(function(){ setHud('🟢 ' + shortName + ' · clip 3 of 6 · #' + jerseyNum + ' only'); }, 18000);
-    T(function(){ setHud('🟢 ' + shortName + ' · clip 4 of 6'); }, 24000);
+    // Phase 5 — brief flash at each subsequent clip detection
+    T(function(){
+      setHud('🟢 ' + shortName + ' · clip 2 of 6');
+      flashBox(12, 40, 14, 33, '✅ #' + jerseyNum + ' clip 2');
+    }, 10000);
+    T(function(){
+      setHud('🟢 ' + shortName + ' · clip 3 of 6');
+      flashBox(8, 32, 15, 34, '✅ #' + jerseyNum + ' clip 3');
+    }, 18000);
+    T(function(){
+      setHud('🟢 ' + shortName + ' · clip 4 of 6');
+      flashBox(14, 38, 14, 32, '✅ #' + jerseyNum + ' clip 4');
+    }, 24000);
 
     overlay.classList.add('show');
     timerEl.textContent = '0:30';
