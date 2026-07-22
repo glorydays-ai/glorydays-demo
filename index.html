@@ -493,6 +493,31 @@
         background:transparent; border:1px solid #2a3548; color:#6b8098;
         border-radius:10px; padding:13px 28px; font-size:0.9rem; cursor:pointer;
       }
+      .pm-clip-actions { display:none; flex-direction:column; gap:10px; margin-top:8px; width:100%; }
+      .pm-clip-actions.show { display:flex; }
+      .pm-clip-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+      .pm-clip-buy-all {
+        background:linear-gradient(135deg,#e8b820,#f5d050);
+        color:#000; border:none; border-radius:10px; padding:13px 32px;
+        font-weight:800; font-size:1rem; cursor:pointer; flex:1; max-width:260px;
+      }
+      .pm-clip-join {
+        background:linear-gradient(135deg,#2a6644,#52b788);
+        color:#001a0a; border:none; border-radius:10px; padding:13px 28px;
+        font-weight:800; font-size:1rem; cursor:pointer; flex:1; max-width:260px;
+      }
+      .pm-clip-timestamps {
+        display:flex; gap:8px; flex-wrap:wrap; justify-content:center;
+        padding:10px; background:#0a1015; border:1px solid #1e2535;
+        border-radius:10px; margin-bottom:4px;
+      }
+      .pm-clip-chip {
+        background:#1a2535; border:1px solid #2a3548; color:#e8b820;
+        border-radius:6px; padding:5px 12px; font-size:0.8rem; font-weight:700;
+        cursor:pointer; transition:background 0.2s;
+      }
+      .pm-clip-chip:hover { background:#2a3548; border-color:#e8b820; }
+      .pm-clip-chip-label { font-size:0.65rem; color:#6b8098; display:block; text-align:center; }
       .pm-watermark-note {
         margin-top:18px; padding:12px 16px;
         background:#0a1015; border:1px solid #1e2535; border-radius:8px;
@@ -4186,6 +4211,7 @@
             <div class="archive-title">WSU Upsets #1 UCLA — October 29, 1988</div>
             <div class="archive-sub">QB: Timm Rosenbach · Coach: Jim Walden · ABC Sports — Keith Jackson & Bob Griese</div>
             <button class="preview-btn" onclick="startPreview('WSU vs #1 UCLA — Oct 29, 1988','9.99','PPG-frgjpaY','Timm Rosenbach — QB #9');event.stopPropagation();">▶ 30-sec Preview</button>
+            <button class="preview-btn" style="background:linear-gradient(135deg,#1a3a5c,#2a5a8c);border-color:#2a5a8c;" onclick="startClipFinder('WSU vs #1 UCLA — Oct 29, 1988','PPG-frgjpaY','Timm Rosenbach — QB #9');event.stopPropagation();">🎯 Find My Clips</button>
             <button class="share-btn" onclick="openShareModal('WSU vs #1 UCLA — October 29, 1988');event.stopPropagation();" title="Share 30-sec preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
           </div>
           <div class="archive-card-right">
@@ -4208,6 +4234,7 @@
             <div class="archive-title">1988 Apple Cup — WSU 32, Washington 31</div>
             <div class="archive-sub">QB: Timm Rosenbach · Coach: Jim Walden · Martin Stadium, Pullman</div>
             <button class="preview-btn" onclick="startPreview('1988 Apple Cup — WSU 32, UW 31','9.99','y9BqUM_2q1s','Timm Rosenbach — QB #9');event.stopPropagation();">▶ 30-sec Preview</button>
+            <button class="preview-btn" style="background:linear-gradient(135deg,#1a3a5c,#2a5a8c);border-color:#2a5a8c;" onclick="startClipFinder('1988 Apple Cup — WSU 32, UW 31','y9BqUM_2q1s','Timm Rosenbach — QB #9');event.stopPropagation();">🎯 Find My Clips</button>
             <button class="share-btn" onclick="openShareModal('1988 Apple Cup — WSU 32, Washington 31');event.stopPropagation();" title="Share 30-sec preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
           </div>
           <div class="archive-card-right">
@@ -5757,6 +5784,7 @@
             <div class="archive-title">Pullman HS — Murray's First Handoff</div>
             <div class="archive-sub">QB: Murray Walden · Pullman Greyhounds · This moment is why GloryDays exists</div>
             <button class="preview-btn" onclick="startPreview('Pullman HS — Murray Walden First Handoff, 1967','9.99','gCjr2E67DuA','Murray Walden — RB #12');event.stopPropagation();">▶ 30-sec Preview</button>
+            <button class="preview-btn" style="background:linear-gradient(135deg,#1a3a5c,#2a5a8c);border-color:#2a5a8c;" onclick="startClipFinder('Pullman HS — Murray Walden First Handoff, 1967','gCjr2E67DuA','Murray Walden — RB #12');event.stopPropagation();">🎯 Find My Clips</button>
             <button class="share-btn" onclick="openShareModal('Pullman HS — Murray Walden First Handoff, 1967');event.stopPropagation();" title="Share 30-sec preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
           </div>
           <div class="archive-card-right">
@@ -6241,6 +6269,46 @@
     if (placeholderEl) placeholderEl.style.display = 'flex';
     document.getElementById('preview-overlay').classList.remove('show');
   }
+
+  function startClipFinder(title, videoId, playerName) {
+    // Switch modal to clip-finder mode
+    var stdActions = document.getElementById('pm-standard-actions');
+    var clipActions = document.getElementById('pm-clip-actions');
+    if (stdActions) stdActions.style.display = 'none';
+    if (clipActions) clipActions.classList.add('show');
+
+    // Populate timestamps as buyable chips
+    var clips = ['0:14','0:28','0:41','0:55','1:08','1:22'];
+    var jerseyMatch = playerName ? playerName.match(/#(\d+)/) : null;
+    var jerseyNum = jerseyMatch ? jerseyMatch[1] : '12';
+    var clipCount = clips.length;
+    var allPrice = (clipCount * 0.99).toFixed(2);
+    var allPriceEl = document.getElementById('pm-clip-all-price');
+    if (allPriceEl) allPriceEl.textContent = '$' + allPrice;
+
+    var tsEl = document.getElementById('pm-clip-timestamps');
+    if (tsEl) {
+      tsEl.innerHTML = '<span style="font-size:0.7rem;color:#6b8098;width:100%;text-align:center;display:block;margin-bottom:4px;">Tap a clip to preview · Buy just that moment</span>' +
+        clips.map(function(t, i) {
+          return '<div class="pm-clip-chip" onclick="closePreview()">' +
+            '<span>Clip ' + (i+1) + ' &nbsp;·&nbsp; ' + t + '</span>' +
+            '<span class="pm-clip-chip-label">$0.99</span></div>';
+        }).join('');
+    }
+
+    // Run the standard preview with clip-finder framing
+    startPreview(title, null, videoId, playerName);
+  }
+
+  // Reset modal mode on close
+  var _origClose = closePreview;
+  closePreview = function() {
+    var stdActions = document.getElementById('pm-standard-actions');
+    var clipActions = document.getElementById('pm-clip-actions');
+    if (stdActions) stdActions.style.display = '';
+    if (clipActions) clipActions.classList.remove('show');
+    _origClose();
+  };
 
   // Populate platform hero sprocket holes
   (function() {
@@ -6891,10 +6959,19 @@
     </div>
     <p class="preview-label">Preview time remaining</p>
     <div class="preview-timer" id="preview-timer">0:30</div>
-    <div class="pm-actions">
+    <div class="pm-actions" id="pm-standard-actions">
       <button class="pm-join-btn" onclick="closePreview()">⭐ Join GloryDays — $49/yr</button>
       <button class="pm-buy-btn" onclick="closePreview()">🛒 Buy This Video — <span id="preview-price">$9.99</span></button>
       <button class="pm-close-btn" onclick="closePreview()">Close Preview</button>
+    </div>
+    <!-- CLIP FINDER ACTIONS (shown when startClipFinder is called) -->
+    <div class="pm-clip-actions" id="pm-clip-actions">
+      <div class="pm-clip-timestamps" id="pm-clip-timestamps"></div>
+      <div class="pm-clip-row">
+        <button class="pm-clip-buy-all" onclick="closePreview()">🎬 Buy All My Clips — <span id="pm-clip-all-price">$4.99</span></button>
+        <button class="pm-clip-join" onclick="closePreview()">⭐ Join — $49/yr · All Games</button>
+      </div>
+      <button class="pm-close-btn" style="margin:0 auto;" onclick="closePreview()">Close</button>
     </div>
     <div class="pm-watermark-note">
       🔒 All purchased downloads are digitally watermarked with your member ID to protect content creators.
