@@ -534,7 +534,8 @@
         display:none; position:absolute;
         border:2px solid #52b788; border-radius:4px;
         box-shadow:0 0 0 1px rgba(74,222,128,0.3), 0 0 16px rgba(74,222,128,0.4);
-        animation:bb-pulse 1.8s ease-in-out infinite, bb-drift 4s ease-in-out infinite;
+        animation:bb-pulse 1.8s ease-in-out infinite;
+        transition: top 0.4s ease, left 0.4s ease, width 0.4s ease, height 0.4s ease;
         top:18%; left:34%; width:18%; height:52%;
         z-index:10;
       }
@@ -563,12 +564,7 @@
         0%,100% { box-shadow:0 0 0 1px rgba(74,222,128,0.3), 0 0 16px rgba(74,222,128,0.4); border-color:#52b788; }
         50%      { box-shadow:0 0 0 2px rgba(74,222,128,0.5), 0 0 28px rgba(74,222,128,0.7); border-color:#7effc0; }
       }
-      @keyframes bb-drift {
-        0%,100% { transform:translate(0,0); }
-        25%      { transform:translate(2px,-1px); }
-        50%      { transform:translate(-1px,2px); }
-        75%      { transform:translate(1px,1px); }
-      }
+      @keyframes bb-drift { 0%,100%{transform:translate(0,0);} }
       .pm-ai-hud {
         position:absolute; top:6px; left:6px;
         background:rgba(0,10,20,0.82); border:1px solid #52b788;
@@ -6155,6 +6151,33 @@
     }
     if (badgeEl) badgeEl.classList.add('active');
 
+    // Simulate AI tracking — move bounding box through realistic QB positions over 30s
+    // Each entry: [top%, left%, width%, height%]
+    var trackPath = [
+      [28, 36, 22, 44],  // 0s:  QB calling play in huddle
+      [32, 42, 18, 40],  // 3.5s: breaking huddle
+      [36, 48, 16, 38],  // 7s:  walking to line
+      [40, 44, 17, 36],  // 10.5s: crouched under center
+      [34, 40, 18, 40],  // 14s: snap — moving back
+      [26, 32, 20, 46],  // 17.5s: dropping back / handing off
+      [24, 38, 18, 48],  // 21s: post-play standing
+      [30, 42, 16, 42],  // 24.5s: jogging back
+      [29, 37, 20, 44]   // 28s: back in huddle
+    ];
+    var trackIdx = 0;
+    function moveTrackBox() {
+      if (!bbEl || !bbEl.classList.contains('active')) return;
+      var p = trackPath[trackIdx % trackPath.length];
+      bbEl.style.top    = p[0] + '%';
+      bbEl.style.left   = p[1] + '%';
+      bbEl.style.width  = p[2] + '%';
+      bbEl.style.height = p[3] + '%';
+      trackIdx++;
+    }
+    moveTrackBox();
+    if (window._gloryTrackInterval) clearInterval(window._gloryTrackInterval);
+    window._gloryTrackInterval = setInterval(moveTrackBox, 3500);
+
     overlay.classList.add('show');
     timerEl.textContent = '0:30';
     timerEl.classList.remove('expired');
@@ -6177,6 +6200,7 @@
 
   function closePreview() {
     if (previewInterval) clearInterval(previewInterval);
+    if (window._gloryTrackInterval) clearInterval(window._gloryTrackInterval);
     const iframeEl = document.getElementById('pm-video-iframe');
     if (iframeEl) { iframeEl.src = ''; iframeEl.style.display = 'none'; }
     const placeholderEl = document.getElementById('pm-placeholder');
