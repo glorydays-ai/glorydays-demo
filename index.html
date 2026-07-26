@@ -2214,7 +2214,7 @@
       <p class="hero-sub">Relive the glory days. Stream exclusive highlights, full games, and behind-the-scenes moments from your favorite college, high school, and youth sports teams.</p>
       <div class="hero-ctas">
         <button class="hero-cta-primary" onclick="showSchool('wsu')">▶&nbsp; Start Watching</button>
-        <button class="hero-cta-secondary" onclick="showPage('platform-page')">&#9432;&nbsp; Explore</button>
+        <button class="hero-cta-secondary" onclick="document.getElementById('explore-section').scrollIntoView({behavior:'smooth'})">&#9660;&nbsp; Explore</button>
       </div>
 
     </div>
@@ -2309,7 +2309,7 @@
 
 
   <!-- ERA FILM STRIP -->
-  <div class="era-strip">
+  <div class="era-strip" id="explore-section">
     <div class="era-strip-label">Decades of Sports History · Scroll to Explore</div>
     <!-- Film-hole row top -->
     <div style="display:flex;gap:10px;padding:0 20px;margin-bottom:6px;">
@@ -10138,8 +10138,7 @@
 <div style="text-align:center;padding:14px 20px;font-size:0.68rem;color:#2e3a4a;letter-spacing:1.2px;border-top:1px solid #0d1117;">
   4,200+ Schools &amp; Programs &nbsp;&middot;&nbsp; 180K+ Archived Videos &nbsp;&middot;&nbsp; $2.1M Paid to Creators &nbsp;&middot;&nbsp; Era Coverage 1920s–Now
 </div>
-</body>
-</html></div><!-- /locker-saved-grid -->
+</div><!-- /locker-saved-grid -->
 
     <!-- ── UPLOAD MEMORY ── -->
     <div id="lt-upload" class="locker-tab-panel">
