@@ -5216,9 +5216,6 @@
       </div>
     </div>
   </div>
-</div>
-
-
 
   <div class="tab-panel" id="wsu-panel-radio">
     <div class="section" style="padding-top:28px;">
@@ -5310,6 +5307,7 @@
       </div>
     </div>
   </div>
+</div><!-- /wsu -->
 <!-- ╔══════════════════════════════════════════════════╗ -->
 <!-- ║               IOWA STATE PAGE                    ║ -->
 <!-- ╚══════════════════════════════════════════════════╝ -->
@@ -5795,9 +5793,6 @@
       </div>
     </div>
   </div>
-</div>
-
-
 
   <div class="tab-panel" id="isu-panel-radio">
     <div class="section" style="padding-top:28px;">
@@ -5889,6 +5884,7 @@
       </div>
     </div>
   </div>
+</div><!-- /isu -->
 <!-- ╔══════════════════════════════════════════════════╗ -->
 <!-- ║                NEBRASKA PAGE                     ║ -->
 <!-- ╚══════════════════════════════════════════════════╝ -->
@@ -6139,9 +6135,6 @@
       </div>
     </div>
   </div>
-</div>
-
-
 
   <div class="tab-panel" id="unl-panel-radio">
     <div class="section" style="padding-top:28px;">
@@ -6233,6 +6226,7 @@
       </div>
     </div>
   </div>
+</div><!-- /unl -->
 <!-- ╔══════════════════════════════════════════════════╗ -->
 <!-- ║             PULLMAN HIGH SCHOOL                  ║ -->
 <!-- ╚══════════════════════════════════════════════════╝ -->
@@ -6588,8 +6582,8 @@
 
 
 <script>
-  const schoolColors = { wsu:'#981E32', isu:'#C8102E', unl:'#E41C38', phs:'#003087', nd:'#C99700', gon:'#002469', lsu:'#461D7C', ucl:'#2D68C4', uw:'#4B2E83', tex:'#BF5700' };
-  const schoolAccents = { wsu:'#5E6A71', isu:'#F1BE48', unl:'#f0e6c8', phs:'#F5C518', nd:'#0C2340', gon:'#CC0000', lsu:'#FDD023', ucl:'#FFD100', uw:'#B7A57A', tex:'#FFFFFF' };
+  const schoolColors = { wsu:'#981E32', isu:'#C8102E', unl:'#E41C38', phs:'#003087', wyo:'#492F24', nd:'#C99700', gon:'#002469', lsu:'#461D7C', ucl:'#2D68C4', uw:'#4B2E83', tex:'#BF5700' };
+  const schoolAccents = { wsu:'#5E6A71', isu:'#F1BE48', unl:'#f0e6c8', phs:'#F5C518', wyo:'#FFC425', nd:'#0C2340', gon:'#CC0000', lsu:'#FDD023', ucl:'#FFD100', uw:'#B7A57A', tex:'#FFFFFF' };
 
   function showPage(page, skipHistory) {
     document.querySelectorAll('.school-page, .locker-page, .home-page, .platform-page, .gdtv-page, .find-me-page, .partner-page').forEach(p => p.classList.remove('active'));
@@ -6624,7 +6618,24 @@
   }
   function showSchool(id, skipHistory) {
     document.querySelectorAll('.school-page, .locker-page, .home-page, .platform-page, .gdtv-page, .find-me-page, .partner-page').forEach(p => p.classList.remove('active'));
+    // Clear any tab panels that escaped their school div (prevents bleed between schools)
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+    // Re-activate the default Videos panel for this school
+    const defaultPanel = document.getElementById(id + '-panel-videos');
+    if (defaultPanel) defaultPanel.classList.add('active');
+    // Re-activate the Videos tab button
+    document.querySelectorAll('[id^="' + id + '-tab-"]').forEach(t => {
+      t.classList.remove('active');
+      t.style.borderBottomColor = 'transparent';
+      t.style.color = '#9aa3b0';
+    });
+    const defaultTab = document.getElementById(id + '-tab-videos');
+    if (defaultTab) {
+      defaultTab.classList.add('active');
+      defaultTab.style.borderBottomColor = schoolAccents[id] || '#e8b820';
+      defaultTab.style.color = '#fff';
+    }
     document.querySelectorAll('.stab').forEach(t => {
       t.style.background = '#131923'; t.style.borderColor = '#2a3548'; t.style.color = '#9aa3b0';
     });
