@@ -3395,17 +3395,17 @@
 <div class="school-tabs" id="school-tabs-bar" style="display:none;">
   <div class="stab" id="stab-wsu" onclick="showSchool('wsu')" style="background:#981E32;border-color:#981E32;color:#fff;">WSU COUGARS</div>
   <div class="stab" id="stab-isu" onclick="showSchool('isu')">IOWA STATE CYCLONES</div>
+  <div class="stab" id="stab-wyo" onclick="showSchool('wyo')">WYOMING COWBOYS</div>
   <div class="stab" id="stab-unl" onclick="showSchool('unl')">NEBRASKA CORNHUSKERS</div>
+  <div class="stab" id="stab-phs" onclick="showSchool('phs')">PULLMAN HIGH SCHOOL</div>
   <div class="stab" id="stab-nd" onclick="showSchool('nd')">NOTRE DAME</div>
   <div class="stab" id="stab-lsu" onclick="showSchool('lsu')">LSU TIGERS</div>
   <div class="stab" id="stab-ucl" onclick="showSchool('ucl')">UCLA BRUINS</div>
   <div class="stab" id="stab-uw" onclick="showSchool('uw')">WASHINGTON HUSKIES</div>
   <div class="stab" id="stab-tex" onclick="showSchool('tex')">TEXAS LONGHORNS</div>
   <div class="stab" id="stab-gon" onclick="showSchool('gon')">GONZAGA BULLDOGS</div>
-  <div class="stab" id="stab-phs" onclick="showSchool('phs')">PULLMAN HIGH SCHOOL</div>
   <div class="stab" id="stab-uid" onclick="showSchool('uid')">IDAHO VANDALS</div>
   <div class="stab" id="stab-sim" onclick="showSchool('sim')">SIMPSON RED HAWKS</div>
-  <div class="stab" id="stab-wyo" onclick="showSchool('wyo')">WYOMING COWBOYS</div>
 </div>
 
 
@@ -3797,18 +3797,26 @@
       </style>
 
       <script>
+        var WYO_IDS = {
+          'g1':   '57a8d2d9863c51bb3890f51e7ed9d118',
+          'g2':   'de73fdb67cc42e20ede9a403441ed07e',
+          'g3':   '1cff379eb492270b51f30c65f90abbe0',
+          'g4':   '1cb32487ac9ee90286b3ead18eb0843a',
+          'utst': '57a8d2d9863c51bb3890f51e7ed9d118'
+        };
         function wyoPreview(gameId, title) {
+          var videoId = WYO_IDS[gameId] || WYO_IDS['g1'];
           var existing = document.getElementById('wyo-preview-overlay');
           if (existing) existing.remove();
           var overlay = document.createElement('div');
           overlay.id = 'wyo-preview-overlay';
           overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.94);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;box-sizing:border-box;';
           overlay.innerHTML =
-            '<div style="font-size:0.72rem;font-weight:700;letter-spacing:3px;color:#FFC425;">GLORYDAYS · 30-SECOND PREVIEW</div>' +
+            '<div style="font-size:0.72rem;font-weight:700;letter-spacing:3px;color:#FFC425;">GLORYDAYS · FULL GAME FILM</div>' +
             '<div style="font-size:1.15rem;font-weight:800;color:#fff;text-align:center;max-width:520px;">' + title + '</div>' +
             '<div style="width:520px;max-width:92vw;border-radius:12px;overflow:hidden;border:2px solid #492F24;box-shadow:0 0 40px rgba(255,196,37,0.15);">' +
             '<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;">' +
-            '<iframe src="https://iframe.cloudflarestream.com/1cff379eb492270b51f30c65f90abbe0?autoplay=1&muted=0&controls=1&loop=0" ' +
+            '<iframe src="https://iframe.cloudflarestream.com/' + videoId + '?autoplay=1&muted=0&controls=1&loop=0" ' +
             'style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" ' +
             'allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;" allowfullscreen></iframe>' +
             '</div></div>' +
