@@ -3401,6 +3401,7 @@
 
 <!-- SCHOOL SELECTOR TABS -->
 <div class="school-tabs" id="school-tabs-bar" style="display:none;">
+  <div class="stab" onclick="showPage('home')" style="background:#1a2235;border-color:#2a3548;color:#9aa3b0;min-width:80px;flex:0 0 auto;">← Home</div>
   <div class="stab" id="stab-wsu" onclick="showSchool('wsu')" style="background:#981E32;border-color:#981E32;color:#fff;">WSU COUGARS</div>
   <div class="stab" id="stab-isu" onclick="showSchool('isu')">IOWA STATE CYCLONES</div>
   <div class="stab" id="stab-wyo" onclick="showSchool('wyo')">WYOMING COWBOYS</div>
@@ -3775,217 +3776,146 @@
       </div>
 
       <style>
-        .wyo-card { background:#0d1117; border:1px solid #492F24; border-radius:14px; overflow:hidden; margin-bottom:24px; }
-        .wyo-poster { position:relative; height:210px; overflow:hidden; cursor:pointer; background:#0d1117; }
-        .wyo-poster-inner { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
-          background:linear-gradient(160deg, #1a0f08 0%, #2d1a00 50%, #1a0f08 100%); }
-        .wyo-badge { font-size:0.65rem; font-weight:800; letter-spacing:2px; color:#FFC425; text-transform:uppercase; opacity:0.9; }
-        .wyo-title-lg { font-size:1.15rem; font-weight:800; color:#fff; text-align:center; padding:0 24px; line-height:1.3; }
-        .wyo-subtitle { font-size:0.75rem; color:#94a3b8; text-align:center; }
-        .wyo-location { font-size:0.7rem; color:#FFC425; opacity:0.8; text-align:center; }
-        .wyo-play-btn { width:54px; height:54px; background:#492F24; border:2px solid #FFC425; border-radius:50%; display:flex; align-items:center; justify-content:center;
-          box-shadow:0 0 0 5px rgba(73,47,36,0.3), 0 4px 20px rgba(255,196,37,0.25); transition:transform 0.15s; margin-top:4px; }
-        .wyo-poster:hover .wyo-play-btn { transform:scale(1.12); box-shadow:0 0 0 10px rgba(73,47,36,0.3), 0 6px 32px rgba(255,196,37,0.4); }
-        .wyo-play-btn svg { margin-left:5px; }
-        .wyo-hint { font-size:0.68rem; color:#475569; letter-spacing:1px; text-transform:uppercase; }
-        .wyo-meta { padding:14px 18px; border-top:1px solid #1e2535; }
-        .wyo-era { font-size:0.72rem; font-weight:700; letter-spacing:1.5px; color:#FFC425; margin-bottom:4px; }
-        .wyo-name { font-size:1rem; font-weight:700; color:#e2e8f0; margin-bottom:6px; }
-        .wyo-details { display:flex; gap:16px; flex-wrap:wrap; }
-        .wyo-detail { font-size:0.75rem; color:#64748b; }
-        .wyo-price-row { display:flex; align-items:center; justify-content:space-between; margin-top:12px; padding-top:12px; border-top:1px solid #1e2535; }
-        .wyo-price { font-size:1rem; font-weight:800; color:#FFC425; }
-        .wyo-preview-btn { background:#492F24; color:#FFC425; border:1px solid #FFC425; border-radius:8px; padding:7px 16px; font-size:0.8rem; font-weight:700; cursor:pointer; transition:background 0.15s; }
-        .wyo-preview-btn:hover { background:#5d3d2e; }
-        .wyo-buy-btn { background:#FFC425; color:#1a0f08; border:none; border-radius:8px; padding:7px 16px; font-size:0.8rem; font-weight:800; cursor:pointer; transition:opacity 0.15s; }
-        .wyo-buy-btn:hover { opacity:0.88; }
-        .wyo-film-strip { display:flex; gap:4px; position:absolute; bottom:10px; left:50%; transform:translateX(-50%); }
-        .wyo-film-dot { width:8px; height:8px; border-radius:2px; background:#FFC425; opacity:0.3; }
-        .wyo-film-dot.active { opacity:0.9; }
+        /* Wyoming YouTube-style video grid */
+        .wyo-video-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+        @media(max-width:900px){ .wyo-video-grid { grid-template-columns:repeat(2,1fr); gap:10px; } }
+        @media(max-width:440px){ .wyo-video-grid { grid-template-columns:1fr; } }
+        .wyo-vcard { background:#0d1117; border:1px solid #1e2535; border-radius:10px; overflow:hidden; cursor:pointer; transition:border-color 0.15s, transform 0.15s; }
+        .wyo-vcard:hover { border-color:#492F24; transform:translateY(-2px); }
+        .wyo-vcard.playing { border-color:#FFC425; box-shadow:0 0 0 2px #FFC425; }
+        .wyo-thumb-wrap { position:relative; width:100%; padding-bottom:56.25%; background:#1a0f08; overflow:hidden; }
+        .wyo-thumb-wrap img { position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; display:block; }
+        .wyo-thumb-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.35); display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.15s; }
+        .wyo-vcard:hover .wyo-thumb-overlay { opacity:1; }
+        .wyo-play-circle { width:44px; height:44px; background:rgba(73,47,36,0.92); border:2px solid #FFC425; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+        .wyo-play-circle svg { margin-left:4px; }
+        .wyo-badge-pill { position:absolute; top:7px; left:7px; background:rgba(0,0,0,0.72); border-radius:4px; padding:2px 7px; font-size:0.6rem; font-weight:800; color:#FFC425; letter-spacing:0.5px; }
+        .wyo-exclusive-pill { position:absolute; top:7px; right:7px; background:linear-gradient(135deg,#492F24 0%,#2d1a08 100%); border:1px solid #FFC425; border-radius:4px; padding:2px 7px; font-size:0.6rem; font-weight:800; color:#FFC425; }
+        .wyo-thumb-fallback { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(160deg,#1a0f08 0%,#2d1a00 50%,#1a0f08 100%); }
+        .wyo-vcard-meta { padding:9px 11px 11px; }
+        .wyo-vcard-title { font-size:0.88rem; font-weight:700; color:#e2e8f0; line-height:1.3; margin-bottom:4px; }
+        .wyo-vcard-sub { font-size:0.7rem; color:#64748b; }
+        /* Inline player */
+        .wyo-player-row { display:none; margin-bottom:20px; border-radius:12px; overflow:hidden; border:1px solid #492F24; background:#000; }
+        .wyo-player-row.active { display:block; }
+        .wyo-player-iframe-wrap { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; }
+        .wyo-player-iframe-wrap iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
+        .wyo-player-info { padding:10px 16px; background:#0d1117; border-top:1px solid #1e2535; display:flex; align-items:center; gap:10px; }
+        .wyo-player-title { font-size:0.95rem; font-weight:700; color:#e2e8f0; }
+        .wyo-player-era { font-size:0.7rem; font-weight:700; letter-spacing:1.5px; color:#FFC425; }
+        .wyo-player-close { margin-left:auto; background:none; border:1px solid #334155; color:#94a3b8; border-radius:6px; padding:4px 10px; font-size:0.75rem; cursor:pointer; }
+        .wyo-player-close:hover { border-color:#492F24; color:#fff; }
       </style>
 
       <script>
         var WYO_IDS = {
-          'g1':   '57a8d2d9863c51bb3890f51e7ed9d118',
-          'g2':   'de73fdb67cc42e20ede9a403441ed07e',
-          'g3':   '1cff379eb492270b51f30c65f90abbe0',
-          'g4':   '1cb32487ac9ee90286b3ead18eb0843a',
-          'utst': '57a8d2d9863c51bb3890f51e7ed9d118'
+          'g1': '57a8d2d9863c51bb3890f51e7ed9d118',
+          'g2': 'de73fdb67cc42e20ede9a403441ed07e',
+          'g3': '1cff379eb492270b51f30c65f90abbe0',
+          'g4': '1cb32487ac9ee90286b3ead18eb0843a'
         };
-        function wyoPreview(gameId, title) {
-          var videoId = WYO_IDS[gameId] || WYO_IDS['g1'];
-          var existing = document.getElementById('wyo-preview-overlay');
-          if (existing) existing.remove();
-          var overlay = document.createElement('div');
-          overlay.id = 'wyo-preview-overlay';
-          overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.94);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;box-sizing:border-box;';
-          overlay.innerHTML =
-            '<div style="font-size:0.72rem;font-weight:700;letter-spacing:3px;color:#FFC425;">GLORYDAYS · FULL GAME FILM</div>' +
-            '<div style="font-size:1.15rem;font-weight:800;color:#fff;text-align:center;max-width:520px;">' + title + '</div>' +
-            '<div style="width:520px;max-width:92vw;border-radius:12px;overflow:hidden;border:2px solid #492F24;box-shadow:0 0 40px rgba(255,196,37,0.15);">' +
-            '<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;">' +
-            '<iframe src="https://iframe.cloudflarestream.com/' + videoId + '?autoplay=1&muted=0&controls=1&loop=0" ' +
-            'style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" ' +
-            'allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;" allowfullscreen></iframe>' +
-            '</div></div>' +
-            '<div style="font-size:0.75rem;color:#64748b;text-align:center;">Historic 16mm film — digitized &amp; preserved on GloryDays</div>' +
-            '<div style="display:flex;gap:12px;">' +
-            '<button onclick="document.getElementById(\'wyo-preview-overlay\').remove();" style="background:transparent;color:#64748b;border:1px solid #334155;border-radius:8px;padding:10px 20px;cursor:pointer;font-size:0.85rem;">Close</button>' +
-            '<button style="background:#FFC425;color:#1a0f08;border:none;border-radius:8px;padding:10px 24px;cursor:pointer;font-size:0.85rem;font-weight:800;">Purchase Full Film — $14.99</button>' +
-            '</div>';
-          document.body.appendChild(overlay);
-          overlay.addEventListener('click', function(e) {
-            if (e.target === overlay) overlay.remove();
-          });
+        function playWYOGrid(gameId, title, era) {
+          var row = document.getElementById('wyo-player-row');
+          var wrap = document.getElementById('wyo-player-wrap');
+          var ptitle = document.getElementById('wyo-player-title-el');
+          var pera = document.getElementById('wyo-player-era-el');
+          document.querySelectorAll('.wyo-vcard').forEach(function(c){ c.classList.remove('playing'); });
+          var card = document.getElementById('wyovc-' + gameId);
+          if(card) card.classList.add('playing');
+          var videoId = WYO_IDS[gameId];
+          wrap.innerHTML = '<div class="wyo-player-iframe-wrap"><iframe src="https://iframe.cloudflarestream.com/' + videoId + '?autoplay=1&muted=0&controls=1&loop=0" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;" allowfullscreen></iframe></div>';
+          if(ptitle) ptitle.textContent = title;
+          if(pera) pera.textContent = era;
+          row.classList.add('active');
+          row.scrollIntoView({behavior:'smooth', block:'nearest'});
+        }
+        function closeWYOPlayer() {
+          var row = document.getElementById('wyo-player-row');
+          document.getElementById('wyo-player-wrap').innerHTML = '';
+          row.classList.remove('active');
+          document.querySelectorAll('.wyo-vcard').forEach(function(c){ c.classList.remove('playing'); });
         }
       </script>
 
-      <!-- GAME 1: Wyoming vs Utah State, Oct 3 1959 -->
-      <div class="wyo-card" data-school="wyo" data-sport="football" data-tags="wyoming utah state 1959 football laramie cowboys">
-        <div class="wyo-poster" onclick="wyoPreview('g1','Wyoming Cowboys vs Utah State Aggies · October 3, 1959')">
-          <div class="wyo-poster-inner">
-            <div class="wyo-badge">Wyoming Cowboys · Football · 1959</div>
-            <div class="wyo-title-lg">Wyoming vs Utah State</div>
-            <div class="wyo-subtitle">Skyline Conference · October 3, 1959</div>
-            <div class="wyo-location">📍 War Memorial Stadium, Laramie, Wyoming</div>
-            <div class="wyo-play-btn">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFC425"><polygon points="5,3 19,12 5,21"/></svg>
-            </div>
-            <div class="wyo-hint">▶ Click for 30-sec preview</div>
-            <div class="wyo-film-strip">
-              <div class="wyo-film-dot active"></div><div class="wyo-film-dot active"></div><div class="wyo-film-dot active"></div>
-              <div class="wyo-film-dot"></div><div class="wyo-film-dot"></div>
-            </div>
+      <!-- Inline player -->
+      <div class="wyo-player-row" id="wyo-player-row">
+        <div id="wyo-player-wrap"></div>
+        <div class="wyo-player-info">
+          <div>
+            <div class="wyo-player-era" id="wyo-player-era-el"></div>
+            <div class="wyo-player-title" id="wyo-player-title-el"></div>
           </div>
-        </div>
-        <div class="wyo-meta">
-          <div class="wyo-era">WYOMING COWBOYS · FOOTBALL · 1959 — ORIGINAL 16MM GAME FILM</div>
-          <div class="wyo-name">Wyoming Cowboys vs Utah State Aggies</div>
-          <div class="wyo-details">
-            <span class="wyo-detail">📅 October 3, 1959</span>
-            <span class="wyo-detail">📍 Laramie, Wyoming</span>
-            <span class="wyo-detail">🏟️ War Memorial Stadium</span>
-            <span class="wyo-detail">🏈 Skyline Conference</span>
-          </div>
-          <div class="wyo-price-row">
-            <div class="wyo-price">$14.99 · Full Game Film</div>
-            <div style="display:flex;gap:8px;">
-              <button class="wyo-preview-btn" onclick="wyoPreview('g1','Wyoming Cowboys vs Utah State Aggies · October 3, 1959')">▶ 30-Sec Preview</button>
-              <button class="wyo-buy-btn">Purchase</button>
-            </div>
-          </div>
+          <button class="wyo-player-close" onclick="closeWYOPlayer()">✕ Close</button>
         </div>
       </div>
 
-      <!-- GAME 2: Wyoming vs Colorado State, Oct 10 1959 -->
-      <div class="wyo-card" data-school="wyo" data-sport="football" data-tags="wyoming colorado state 1959 football laramie cowboys">
-        <div class="wyo-poster" onclick="wyoPreview('g2','Wyoming Cowboys vs Colorado State Rams · October 10, 1959')">
-          <div class="wyo-poster-inner">
-            <div class="wyo-badge">Wyoming Cowboys · Football · 1959</div>
-            <div class="wyo-title-lg">Wyoming vs Colorado State</div>
-            <div class="wyo-subtitle">Skyline Conference · October 10, 1959</div>
-            <div class="wyo-location">📍 War Memorial Stadium, Laramie, Wyoming</div>
-            <div class="wyo-play-btn">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFC425"><polygon points="5,3 19,12 5,21"/></svg>
-            </div>
-            <div class="wyo-hint">▶ Click for 30-sec preview</div>
-            <div class="wyo-film-strip">
-              <div class="wyo-film-dot active"></div><div class="wyo-film-dot active"></div><div class="wyo-film-dot active"></div>
-              <div class="wyo-film-dot"></div><div class="wyo-film-dot"></div>
-            </div>
-          </div>
-        </div>
-        <div class="wyo-meta">
-          <div class="wyo-era">WYOMING COWBOYS · FOOTBALL · 1959 — ORIGINAL 16MM GAME FILM</div>
-          <div class="wyo-name">Wyoming Cowboys vs Colorado State Rams</div>
-          <div class="wyo-details">
-            <span class="wyo-detail">📅 October 10, 1959</span>
-            <span class="wyo-detail">📍 Laramie, Wyoming</span>
-            <span class="wyo-detail">🏟️ War Memorial Stadium</span>
-            <span class="wyo-detail">🏈 Skyline Conference</span>
-          </div>
-          <div class="wyo-price-row">
-            <div class="wyo-price">$14.99 · Full Game Film</div>
-            <div style="display:flex;gap:8px;">
-              <button class="wyo-preview-btn" onclick="wyoPreview('g2','Wyoming Cowboys vs Colorado State Rams · October 10, 1959')">▶ 30-Sec Preview</button>
-              <button class="wyo-buy-btn">Purchase</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- VIDEO GRID — 4 columns -->
+      <div class="wyo-video-grid">
 
-      <!-- GAME 3: Wyoming vs BYU, Oct 11 1959 -->
-      <div class="wyo-card" data-school="wyo" data-sport="football" data-tags="wyoming byu brigham young 1959 football laramie cowboys">
-        <div class="wyo-poster" onclick="wyoPreview('g3','Wyoming Cowboys vs BYU Cougars · October 11, 1959')">
-          <div class="wyo-poster-inner">
-            <div class="wyo-badge">Wyoming Cowboys · Football · 1959</div>
-            <div class="wyo-title-lg">Wyoming vs BYU</div>
-            <div class="wyo-subtitle">Skyline Conference · October 11, 1959</div>
-            <div class="wyo-location">📍 War Memorial Stadium, Laramie, Wyoming</div>
-            <div class="wyo-play-btn">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFC425"><polygon points="5,3 19,12 5,21"/></svg>
-            </div>
-            <div class="wyo-hint">▶ Click for 30-sec preview</div>
-            <div class="wyo-film-strip">
-              <div class="wyo-film-dot active"></div><div class="wyo-film-dot active"></div><div class="wyo-film-dot active"></div>
-              <div class="wyo-film-dot"></div><div class="wyo-film-dot"></div>
-            </div>
+        <!-- Game 1: vs Utah State, Oct 3 1959 -->
+        <div class="wyo-vcard" id="wyovc-g1" data-school="wyo" data-sport="football" data-tags="wyoming utah state 1959 football laramie cowboys"
+             onclick="playWYOGrid('g1','Wyoming vs Utah State Aggies · October 3, 1959','WYOMING COWBOYS · FOOTBALL · 1959')">
+          <div class="wyo-thumb-wrap">
+            <img src="https://videodelivery.net/57a8d2d9863c51bb3890f51e7ed9d118/thumbnails/thumbnail.jpg" alt="Wyoming vs Utah State 1959" onerror="this.style.display='none';" />
+            <div class="wyo-thumb-fallback"><span style="font-size:2rem;">📽️</span><span style="font-size:0.65rem;color:#FFC425;letter-spacing:1px;margin-top:6px;">16MM FILM</span></div>
+            <div class="wyo-badge-pill">Football · Oct 3, 1959</div>
+            <div class="wyo-exclusive-pill">🎞 GD Exclusive</div>
+            <div class="wyo-thumb-overlay"><div class="wyo-play-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="#FFC425"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+          </div>
+          <div class="wyo-vcard-meta">
+            <div class="wyo-vcard-title">Wyoming vs Utah State</div>
+            <div class="wyo-vcard-sub">Oct 3, 1959 · Skyline Conference · Laramie</div>
           </div>
         </div>
-        <div class="wyo-meta">
-          <div class="wyo-era">WYOMING COWBOYS · FOOTBALL · 1959 — ORIGINAL 16MM GAME FILM</div>
-          <div class="wyo-name">Wyoming Cowboys vs BYU Cougars</div>
-          <div class="wyo-details">
-            <span class="wyo-detail">📅 October 11, 1959</span>
-            <span class="wyo-detail">📍 Laramie, Wyoming</span>
-            <span class="wyo-detail">🏟️ War Memorial Stadium</span>
-            <span class="wyo-detail">🏈 Skyline Conference</span>
-          </div>
-          <div class="wyo-price-row">
-            <div class="wyo-price">$14.99 · Full Game Film</div>
-            <div style="display:flex;gap:8px;">
-              <button class="wyo-preview-btn" onclick="wyoPreview('g3','Wyoming Cowboys vs BYU Cougars · October 11, 1959')">▶ 30-Sec Preview</button>
-              <button class="wyo-buy-btn">Purchase</button>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- GAME 4: Wyoming vs Utah, Oct 14 1959 (Away) -->
-      <div class="wyo-card" data-school="wyo" data-sport="football" data-tags="wyoming utah 1959 football salt lake city cowboys">
-        <div class="wyo-poster" onclick="wyoPreview('g4','Wyoming Cowboys at Utah Utes · October 14, 1959')">
-          <div class="wyo-poster-inner">
-            <div class="wyo-badge">Wyoming Cowboys · Football · 1959 · Away Game</div>
-            <div class="wyo-title-lg">Wyoming at Utah</div>
-            <div class="wyo-subtitle">Skyline Conference · October 14, 1959</div>
-            <div class="wyo-location">✈️ Salt Lake City, Utah · Away</div>
-            <div class="wyo-play-btn">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFC425"><polygon points="5,3 19,12 5,21"/></svg>
-            </div>
-            <div class="wyo-hint">▶ Click for 30-sec preview</div>
-            <div class="wyo-film-strip">
-              <div class="wyo-film-dot active"></div><div class="wyo-film-dot active"></div><div class="wyo-film-dot active"></div>
-              <div class="wyo-film-dot"></div><div class="wyo-film-dot"></div>
-            </div>
+        <!-- Game 2: vs Colorado State, Oct 10 1959 -->
+        <div class="wyo-vcard" id="wyovc-g2" data-school="wyo" data-sport="football" data-tags="wyoming colorado state 1959 football laramie cowboys"
+             onclick="playWYOGrid('g2','Wyoming vs Colorado State Rams · October 10, 1959','WYOMING COWBOYS · FOOTBALL · 1959')">
+          <div class="wyo-thumb-wrap">
+            <img src="https://videodelivery.net/de73fdb67cc42e20ede9a403441ed07e/thumbnails/thumbnail.jpg" alt="Wyoming vs Colorado State 1959" onerror="this.style.display='none';" />
+            <div class="wyo-thumb-fallback"><span style="font-size:2rem;">📽️</span><span style="font-size:0.65rem;color:#FFC425;letter-spacing:1px;margin-top:6px;">16MM FILM</span></div>
+            <div class="wyo-badge-pill">Football · Oct 10, 1959</div>
+            <div class="wyo-exclusive-pill">🎞 GD Exclusive</div>
+            <div class="wyo-thumb-overlay"><div class="wyo-play-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="#FFC425"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+          </div>
+          <div class="wyo-vcard-meta">
+            <div class="wyo-vcard-title">Wyoming vs Colorado State</div>
+            <div class="wyo-vcard-sub">Oct 10, 1959 · Skyline Conference · Laramie</div>
           </div>
         </div>
-        <div class="wyo-meta">
-          <div class="wyo-era">WYOMING COWBOYS · FOOTBALL · 1959 — ORIGINAL 16MM GAME FILM</div>
-          <div class="wyo-name">Wyoming Cowboys at Utah Utes</div>
-          <div class="wyo-details">
-            <span class="wyo-detail">📅 October 14, 1959</span>
-            <span class="wyo-detail">📍 Salt Lake City, Utah</span>
-            <span class="wyo-detail">🏟️ Away Game</span>
-            <span class="wyo-detail">🏈 Skyline Conference</span>
+
+        <!-- Game 3: vs BYU, Oct 11 1959 -->
+        <div class="wyo-vcard" id="wyovc-g3" data-school="wyo" data-sport="football" data-tags="wyoming byu brigham young 1959 football laramie cowboys"
+             onclick="playWYOGrid('g3','Wyoming vs BYU Cougars · October 11, 1959','WYOMING COWBOYS · FOOTBALL · 1959')">
+          <div class="wyo-thumb-wrap">
+            <img src="https://videodelivery.net/1cff379eb492270b51f30c65f90abbe0/thumbnails/thumbnail.jpg" alt="Wyoming vs BYU 1959" onerror="this.style.display='none';" />
+            <div class="wyo-thumb-fallback"><span style="font-size:2rem;">📽️</span><span style="font-size:0.65rem;color:#FFC425;letter-spacing:1px;margin-top:6px;">16MM FILM</span></div>
+            <div class="wyo-badge-pill">Football · Oct 11, 1959</div>
+            <div class="wyo-exclusive-pill">🎞 GD Exclusive</div>
+            <div class="wyo-thumb-overlay"><div class="wyo-play-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="#FFC425"><polygon points="5,3 19,12 5,21"/></svg></div></div>
           </div>
-          <div class="wyo-price-row">
-            <div class="wyo-price">$14.99 · Full Game Film</div>
-            <div style="display:flex;gap:8px;">
-              <button class="wyo-preview-btn" onclick="wyoPreview('g4','Wyoming Cowboys at Utah Utes · October 14, 1959')">▶ 30-Sec Preview</button>
-              <button class="wyo-buy-btn">Purchase</button>
-            </div>
+          <div class="wyo-vcard-meta">
+            <div class="wyo-vcard-title">Wyoming vs BYU</div>
+            <div class="wyo-vcard-sub">Oct 11, 1959 · Skyline Conference · Laramie</div>
           </div>
         </div>
+
+        <!-- Game 4: at Utah, Oct 14 1959 -->
+        <div class="wyo-vcard" id="wyovc-g4" data-school="wyo" data-sport="football" data-tags="wyoming utah 1959 football salt lake city away cowboys"
+             onclick="playWYOGrid('g4','Wyoming at Utah Utes · October 14, 1959','WYOMING COWBOYS · FOOTBALL · 1959 · AWAY')">
+          <div class="wyo-thumb-wrap">
+            <img src="https://videodelivery.net/1cb32487ac9ee90286b3ead18eb0843a/thumbnails/thumbnail.jpg" alt="Wyoming at Utah 1959" onerror="this.style.display='none';" />
+            <div class="wyo-thumb-fallback"><span style="font-size:2rem;">📽️</span><span style="font-size:0.65rem;color:#FFC425;letter-spacing:1px;margin-top:6px;">16MM FILM</span></div>
+            <div class="wyo-badge-pill">Football · Oct 14, 1959 · Away</div>
+            <div class="wyo-exclusive-pill">🎞 GD Exclusive</div>
+            <div class="wyo-thumb-overlay"><div class="wyo-play-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="#FFC425"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+          </div>
+          <div class="wyo-vcard-meta">
+            <div class="wyo-vcard-title">Wyoming at Utah ✈️</div>
+            <div class="wyo-vcard-sub">Oct 14, 1959 · Skyline Conference · Salt Lake City</div>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -6411,7 +6341,7 @@
   const schoolColors = { wsu:'#981E32', isu:'#C8102E', unl:'#E41C38', phs:'#003087', nd:'#C99700', gon:'#002469', lsu:'#461D7C', ucl:'#2D68C4', uw:'#4B2E83', tex:'#BF5700' };
   const schoolAccents = { wsu:'#5E6A71', isu:'#F1BE48', unl:'#f0e6c8', phs:'#F5C518', nd:'#0C2340', gon:'#CC0000', lsu:'#FDD023', ucl:'#FFD100', uw:'#B7A57A', tex:'#FFFFFF' };
 
-  function showPage(page) {
+  function showPage(page, skipHistory) {
     document.querySelectorAll('.school-page, .locker-page, .home-page, .platform-page, .gdtv-page, .find-me-page, .partner-page').forEach(p => p.classList.remove('active'));
     const el = document.getElementById(page);
     if (el) el.classList.add('active');
@@ -6421,6 +6351,7 @@
     // Show school tabs only when on a school page
     const schoolTabsEl = document.getElementById('school-tabs-bar');
     if (schoolTabsEl) schoolTabsEl.style.display = (page === 'locker' || page === 'partners' || page === 'home' || page === 'platform-page' || page === 'gd-tv' || page === 'find-me') ? 'none' : 'flex';
+    if (!skipHistory) history.pushState({view:'page', page:page}, '', page === 'home' ? location.pathname : '#' + page);
     window.scrollTo(0,0);
   }
   function showLocker(tab) {
@@ -6441,20 +6372,31 @@
     if (!file || !title) { alert('Please add a title and select a file.'); return; }
     alert('✅ Upload submitted!\n\nTitle: ' + title + '\nVisibility: ' + (vis === 'private' ? '🔒 Private (My Locker only)' : '🌐 Public to all members') + '\n\nIn the live app this would upload to GloryDays servers.');
   }
-  function showSchool(id) {
+  function showSchool(id, skipHistory) {
     document.querySelectorAll('.school-page, .locker-page, .home-page, .platform-page, .gdtv-page, .find-me-page, .partner-page').forEach(p => p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     document.querySelectorAll('.stab').forEach(t => {
       t.style.background = '#131923'; t.style.borderColor = '#2a3548'; t.style.color = '#9aa3b0';
     });
     const tab = document.getElementById('stab-' + id);
-    tab.style.background = schoolColors[id];
-    tab.style.borderColor = schoolColors[id];
-    tab.style.color = '#fff';
+    if (tab) { tab.style.background = schoolColors[id]; tab.style.borderColor = schoolColors[id]; tab.style.color = '#fff'; }
     const schoolTabsEl = document.getElementById('school-tabs-bar');
     if (schoolTabsEl) schoolTabsEl.style.display = 'flex';
+    if (!skipHistory) history.pushState({view:'school', school:id}, '', '#' + id);
     window.scrollTo(0,0);
   }
+
+  // Handle browser back/forward — stay inside the demo
+  window.addEventListener('popstate', function(e) {
+    if (e.state) {
+      if (e.state.view === 'school') showSchool(e.state.school, true);
+      else if (e.state.view === 'page') showPage(e.state.page, true);
+    } else {
+      showPage('home', true);
+    }
+  });
+  // Seed initial history state so the very first back goes to home, not off-site
+  history.replaceState({view:'page', page:'home'}, '', location.href);
 
   function showTab(school, tabName) {
     // Hide all panels for this school
