@@ -25,7 +25,7 @@
     .nav-links { display:flex; gap:20px; align-items:center; }
     .nav-links a { color:#9aa3b0; text-decoration:none; font-size:0.9rem; white-space:nowrap; }
     .search-box { background:#1a2235; border:1px solid #2a3548; border-radius:8px; padding:7px 14px; color:#9aa3b0; font-size:0.85rem; width:180px; flex-shrink:1; min-width:120px; }
-    .sign-in-btn { background:#e8b820; color:#000; border:none; border-radius:8px; padding:8px 16px; font-weight:700; cursor:pointer; font-size:0.85rem; white-space:nowrap; flex-shrink:0; }
+    .sign-in-btn { background:#8B6F14; color:#f0e6c0; border:none; border-radius:8px; padding:8px 16px; font-weight:700; cursor:pointer; font-size:0.85rem; white-space:nowrap; flex-shrink:0; }
 
     /* SCHOOL SELECTOR */
     .school-tabs { display:flex; gap:0; padding:24px 40px 0; border-bottom:1px solid #1e2535; overflow-x:auto; }
@@ -238,12 +238,12 @@
     
       .locker-nav-btn {
         background: linear-gradient(135deg, #1a3a2a, #2a5a3f);
-        border: 1px solid #3a8055; color: #3A9068;
+        border: 1px solid #3a8055; color: #a8c8b8;
         border-radius: 8px; padding: 8px 14px; font-weight: 700;
         cursor: pointer; font-size: 0.85rem; transition: all 0.2s;
         white-space:nowrap; flex-shrink:0;
       }
-      .locker-nav-btn:hover { background: linear-gradient(135deg, #1f4433, #2e6644); border-color: #3A9068; }
+      .locker-nav-btn:hover { background: linear-gradient(135deg, #1f4433, #2e6644); border-color: #3a8055; }
     
       /* ── MY LOCKER PAGE ──────────────────────────────────────────── */
       .locker-page { display:none; }
@@ -1614,12 +1614,12 @@
     
       .alert-nav-btn {
         background:linear-gradient(135deg,#1a3010,#2a5020);
-        color:#3A9068; border:1px solid #2a6040;
+        color:#a8c8b8; border:1px solid #2a6040;
         border-radius:8px; padding:8px 14px;
         font-size:0.85rem; font-weight:700; cursor:pointer;
         white-space:nowrap; transition:all 0.2s; flex-shrink:0;
       }
-      .alert-nav-btn:hover { background:linear-gradient(135deg,#2a4018,#3a6030); border-color:#3A9068; }
+      .alert-nav-btn:hover { background:linear-gradient(135deg,#2a4018,#3a6030); border-color:#3a6040; }
 
     
       /* ── Youth Sports Search ─────────────────────────── */
@@ -3401,7 +3401,7 @@
 
 <!-- SCHOOL SELECTOR TABS -->
 <div class="school-tabs" id="school-tabs-bar" style="display:none;">
-  <div class="stab" onclick="showPage('home')" style="background:#1a2235;border-color:#2a3548;color:#9aa3b0;min-width:80px;flex:0 0 auto;">← Home</div>
+  <div class="stab" onclick="showPage('home')" style="background:#0d1117;border-color:#8B6F14;color:#e8b820;min-width:90px;flex:0 0 auto;font-weight:700;letter-spacing:0.05em;" title="Back to Home">← Home</div>
   <div class="stab" id="stab-wsu" onclick="showSchool('wsu')" style="background:#981E32;border-color:#981E32;color:#fff;">WSU COUGARS</div>
   <div class="stab" id="stab-isu" onclick="showSchool('isu')">IOWA STATE CYCLONES</div>
   <div class="stab" id="stab-wyo" onclick="showSchool('wyo')">WYOMING COWBOYS</div>
@@ -5446,7 +5446,7 @@
           ptitle.textContent = title;
           pera.textContent = era;
           row.classList.add('active');
-          row.scrollIntoView({behavior:'smooth', block:'nearest'});
+          setTimeout(function(){ row.scrollIntoView({behavior:'smooth', block:'start'}); window.scrollBy(0,-80); }, 30);
         }
         function closeISUPlayer() {
           var row = document.getElementById('isu-player-row');
@@ -5473,7 +5473,7 @@
           ptitle.textContent = title;
           pera.textContent = era;
           row.classList.add('active');
-          row.scrollIntoView({behavior:'smooth', block:'nearest'});
+          setTimeout(function(){ row.scrollIntoView({behavior:'smooth', block:'start'}); window.scrollBy(0,-80); }, 30);
         }
       </script>
 
@@ -5611,7 +5611,7 @@
             <div class="isu-player-era" id="isu-player-era"></div>
             <div class="isu-player-title" id="isu-player-title"></div>
           </div>
-          <button class="isu-player-close" onclick="closeISUPlayer()">✕ Close</button>
+          <button class="isu-player-close" onclick="closeISUPlayer()">← Back to Videos</button>
         </div>
       </div>
 
@@ -6360,7 +6360,7 @@
           document.getElementById('phsvc-' + ytId).classList.add('playing');
           wrap.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytId + '?rel=0&modestbranding=1&autoplay=1&start=14" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
           row.classList.add('active');
-          row.scrollIntoView({behavior:'smooth', block:'nearest'});
+          setTimeout(function(){ row.scrollIntoView({behavior:'smooth', block:'start'}); window.scrollBy(0,-80); }, 30);
         }
         function closePHSPlayer() {
           var row = document.getElementById('phs-player-row');
@@ -6378,7 +6378,7 @@
             <div style="font-size:0.7rem;font-weight:700;letter-spacing:1.5px;color:#94A3B8;">PULLMAN HIGH SCHOOL · FOOTBALL · 1985 — THIS IS ME</div>
             <div style="font-size:0.92rem;font-weight:700;color:#e2e8f0;">Pullman vs Selah — 1985 State Playoff · Watch 0:14 for #12</div>
           </div>
-          <button class="phs-player-close" onclick="closePHSPlayer()">✕ Close</button>
+          <button class="phs-player-close" onclick="closePHSPlayer()">← Back to Videos</button>
         </div>
       </div>
 
@@ -6658,6 +6658,11 @@
   });
   // Seed initial history state so the very first back goes to home, not off-site
   history.replaceState({view:'page', page:'home'}, '', location.href);
+  // If page was loaded with a hash, activate that page
+  (function() {
+    var h = window.location.hash.replace('#','');
+    if (h && ['locker','partners','platform','gd-tv','find-me'].indexOf(h) !== -1) showPage(h, true);
+  })();
 
   function showTab(school, tabName) {
     // Dynamically discover and hide all panels/tabs for this school
@@ -7755,7 +7760,7 @@
     <div class="pm-actions" id="pm-standard-actions">
       <button class="pm-join-btn" onclick="closePreview()">⭐ Join GloryDays — $49/yr</button>
       <button class="pm-buy-btn" onclick="closePreview()">🛒 Buy This Video — <span id="preview-price">$9.99</span></button>
-      <button class="pm-close-btn" onclick="closePreview()">Close Preview</button>
+      <button class="pm-close-btn" onclick="closePreview()">← Back</button>
     </div>
     <!-- CLIP FINDER ACTIONS (shown when startClipFinder is called) -->
     <div class="pm-clip-actions" id="pm-clip-actions">
@@ -7764,7 +7769,7 @@
         <button class="pm-clip-buy-all" onclick="closePreview()">🎬 Buy All My Clips — <span id="pm-clip-all-price">$4.99</span></button>
         <button class="pm-clip-join" onclick="closePreview()">⭐ Join — $49/yr · All Games</button>
       </div>
-      <button class="pm-close-btn" style="margin:0 auto;" onclick="closePreview()">Close</button>
+      <button class="pm-close-btn" style="margin:0 auto;" onclick="closePreview()">← Back</button>
     </div>
     <div class="pm-watermark-note">
       🔒 All purchased downloads are digitally watermarked with your member ID to protect content creators.
@@ -11124,7 +11129,7 @@
     <div class="pm-actions">
       <button class="pm-join-btn" onclick="closePreview()">⭐ Join GloryDays — $49/yr</button>
       <button class="pm-buy-btn" onclick="closePreview()">🛒 Buy This Video — <span id="preview-price">$9.99</span></button>
-      <button class="pm-close-btn" onclick="closePreview()">Close Preview</button>
+      <button class="pm-close-btn" onclick="closePreview()">← Back</button>
     </div>
     <div class="pm-watermark-note">
       🔒 All purchased downloads are digitally watermarked with your member ID to protect content creators.
