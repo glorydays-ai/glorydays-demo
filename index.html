@@ -2213,7 +2213,7 @@
       </h1>
       <p class="hero-sub">Relive the glory days. Stream exclusive highlights, full games, and behind-the-scenes moments from your favorite college, high school, and youth sports teams.</p>
       <div class="hero-ctas">
-        <button class="hero-cta-primary" onclick="showSchool('wsu')">▶&nbsp; Start Watching</button>
+        <button class="hero-cta-primary" onclick="document.getElementById('featured-schools').scrollIntoView({behavior:'smooth'})">▶&nbsp; Start Watching</button>
         <button class="hero-cta-secondary" onclick="document.getElementById('explore-section').scrollIntoView({behavior:'smooth'})">&#9660;&nbsp; Explore</button>
       </div>
 
@@ -3108,7 +3108,7 @@
   </script>
 
 
-  <div class="home-section-header">
+  <div class="home-section-header" id="featured-schools">
       <span class="home-section-title">🎓 Featured Colleges &amp; Programs</span>
       <span class="home-section-link" onclick="showSchool('wyo')">View All Schools →</span>
     </div>
@@ -3802,7 +3802,7 @@
         .wyo-vcard-title { font-size:0.88rem; font-weight:700; color:#e2e8f0; line-height:1.3; margin-bottom:4px; }
         .wyo-vcard-sub { font-size:0.7rem; color:#64748b; }
         /* Inline player */
-        .wyo-player-row { display:none; margin-bottom:20px; border-radius:12px; overflow:hidden; border:1px solid #492F24; background:#000; }
+        .wyo-player-row { display:none; margin-bottom:20px; border-radius:12px; overflow:hidden; border:1px solid #492F24; background:#000; grid-column:1 / -1; }
         .wyo-player-row.active { display:block; }
         .wyo-player-iframe-wrap { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; }
         .wyo-player-iframe-wrap iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
@@ -3828,6 +3828,8 @@
           document.querySelectorAll('.wyo-vcard').forEach(function(c){ c.classList.remove('playing'); });
           var card = document.getElementById('wyovc-' + gameId);
           if(card) card.classList.add('playing');
+          // Move the player to sit right after the clicked card so it opens where you clicked
+          if(card) card.insertAdjacentElement('afterend', row);
           var videoId = WYO_IDS[gameId];
           wrap.innerHTML = '<div class="wyo-player-iframe-wrap"><iframe src="https://iframe.cloudflarestream.com/' + videoId + '?autoplay=1&muted=0&controls=1&loop=0" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;" allowfullscreen></iframe></div>';
           if(ptitle) ptitle.textContent = title;
@@ -5421,7 +5423,7 @@
         .isu-vcard-title { font-size:0.88rem; font-weight:700; color:#e2e8f0; line-height:1.3; margin-bottom:4px; }
         .isu-vcard-sub { font-size:0.7rem; color:#64748b; }
         /* Inline player row — spans full width below grid */
-        .isu-player-row { display:none; margin-bottom:20px; border-radius:12px; overflow:hidden; border:1px solid #C8102E; background:#000; }
+        .isu-player-row { display:none; margin-bottom:20px; border-radius:12px; overflow:hidden; border:1px solid #C8102E; background:#000; grid-column:1 / -1; }
         .isu-player-row.active { display:block; }
         .isu-player-iframe-wrap { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; }
         .isu-player-iframe-wrap iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
@@ -5441,6 +5443,8 @@
           document.querySelectorAll('.isu-vcard').forEach(function(c){ c.classList.remove('playing'); });
           var card = document.getElementById('isuvc-' + ytId);
           if(card) card.classList.add('playing');
+          // Move the player to sit right after the clicked card so it opens where you clicked
+          if(card) card.insertAdjacentElement('afterend', row);
           // Load player
           wrap.innerHTML = '<div class="isu-player-iframe-wrap"><iframe src="https://www.youtube.com/embed/' + ytId + '?rel=0&modestbranding=1&autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
           ptitle.textContent = title;
@@ -5469,6 +5473,8 @@
           document.querySelectorAll('.isu-vcard').forEach(function(c){ c.classList.remove('playing'); });
           var card = document.getElementById(cardId);
           if(card) card.classList.add('playing');
+          // Move the player to sit right after the clicked card so it opens where you clicked
+          if(card) card.insertAdjacentElement('afterend', row);
           wrap.innerHTML = '<div class="isu-player-iframe-wrap"><video src="../' + filename + '" controls autoplay playsinline></video></div>';
           ptitle.textContent = title;
           pera.textContent = era;
