@@ -3826,6 +3826,9 @@
           'g3': '64d6c987e97b938c010aefd7ac4bb2bf',
           'g4': '9b540171796164d844808127c0138946'
         };
+        // PLACEHOLDER timestamps (seconds) — approximate jump-in point so playback
+        // doesn't start at raw kickoff. Update once real Jim Walden clip timing is confirmed.
+        var WYO_START = { 'g1': 95, 'g2': 110, 'g3': 80, 'g4': 130 };
         function playWYOGrid(gameId, title, era) {
           var row = document.getElementById('wyo-player-row');
           var wrap = document.getElementById('wyo-player-wrap');
@@ -3837,7 +3840,8 @@
           // Move the player to sit right after the clicked card so it opens where you clicked
           if(card) card.insertAdjacentElement('afterend', row);
           var videoId = WYO_IDS[gameId];
-          wrap.innerHTML = '<div class="wyo-player-iframe-wrap"><iframe src="https://iframe.cloudflarestream.com/' + videoId + '?autoplay=1&muted=0&controls=1&loop=0" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;" allowfullscreen></iframe></div>';
+          var startSec = WYO_START[gameId] || 90;
+          wrap.innerHTML = '<div class="wyo-player-iframe-wrap"><iframe src="https://iframe.cloudflarestream.com/' + videoId + '?autoplay=1&muted=0&controls=1&loop=0&startTime=' + startSec + 's" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;" allowfullscreen></iframe></div>';
           if(ptitle) ptitle.textContent = title;
           if(pera) pera.textContent = era;
           row.classList.add('active');
@@ -3856,6 +3860,7 @@
         <div id="wyo-player-wrap"></div>
         <div class="wyo-player-info">
           <div>
+            <div class="gd-ai-pill" style="position:static;display:inline-block;margin-bottom:6px;">🤖 AI Identified: Jim Walden — QB</div>
             <div class="wyo-player-era" id="wyo-player-era-el"></div>
             <div class="wyo-player-title" id="wyo-player-title-el"></div>
           </div>
@@ -5446,6 +5451,9 @@
         .isu-player-close:hover { border-color:#C8102E; color:#fff; }
       </style>
       <script>
+        // PLACEHOLDER timestamps (seconds) — approximate jump-in point so playback
+        // doesn't start at raw kickoff. Update once real Jim Walden clip timing is confirmed.
+        var ISU_START = { 'if3RwVDqV4I': 150, 'NfHav0jD1t0': 60 };
         function playISUGrid(ytId, title, era, badge) {
           var row = document.getElementById('isu-player-row');
           var wrap = document.getElementById('isu-player-wrap');
@@ -5458,7 +5466,8 @@
           // Move the player to sit right after the clicked card so it opens where you clicked
           if(card) card.insertAdjacentElement('afterend', row);
           // Load player
-          wrap.innerHTML = '<div class="isu-player-iframe-wrap"><iframe src="https://www.youtube.com/embed/' + ytId + '?rel=0&modestbranding=1&autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
+          var startSec = ISU_START[ytId] || 60;
+          wrap.innerHTML = '<div class="isu-player-iframe-wrap"><iframe src="https://www.youtube.com/embed/' + ytId + '?rel=0&modestbranding=1&autoplay=1&start=' + startSec + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
           ptitle.textContent = title;
           pera.textContent = era;
           row.classList.add('active');
@@ -5633,6 +5642,7 @@
         <div id="isu-player-wrap"></div>
         <div class="isu-player-info">
           <div>
+            <div class="gd-ai-pill" style="position:static;display:inline-block;margin-bottom:6px;">🤖 AI Identified: Jim Walden — Head Coach</div>
             <div class="isu-player-era" id="isu-player-era"></div>
             <div class="isu-player-title" id="isu-player-title"></div>
           </div>
