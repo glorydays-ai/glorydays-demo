@@ -6976,14 +6976,20 @@
     if (titleEl) titleEl.textContent = title || 'This Video';
     if (priceEl) priceEl.textContent = price ? '$' + price : 'FREE';
 
-    // Inject YouTube iframe if videoId provided
-    const iframeEl    = document.getElementById('pm-video-iframe');
+    // Load the real YouTube player (also powers the live time-synced AI
+    // bounding box via startBoxSync — this was built but never wired up
+    // here before; fixed Oct 8, 2026).
     const placeholderEl = document.getElementById('pm-placeholder');
-    if (iframeEl && videoId) {
+    if (videoId) {
       var startTime = (videoId === 'gCjr2E67DuA') ? 14 : 10;
-      iframeEl.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&mute=1&modestbranding=1&rel=0&start=' + startTime;
-      iframeEl.style.display = 'block';
       if (placeholderEl) placeholderEl.style.display = 'none';
+      if (typeof YT !== 'undefined' && YT.Player) {
+        createYTPlayer(videoId, startTime);
+      } else {
+        // YouTube IFrame API script hasn't finished loading yet — create
+        // the player as soon as it's ready instead of silently failing.
+        window.onYouTubeIframeAPIReady = function() { createYTPlayer(videoId, startTime); };
+      }
     } else if (placeholderEl) {
       placeholderEl.style.display = 'flex';
     }
