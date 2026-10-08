@@ -7068,6 +7068,15 @@
         timerEl.textContent = 'Preview Ended';
         timerEl.classList.add('expired');
         if (barEl) barEl.style.width = '0%';
+        // Actually stop playback at 0:00 (fixed Oct 8, 2026) — destroying the
+        // player (not just pausing) removes its native controls too, so a
+        // viewer can't just hit YouTube's own play button to keep watching.
+        destroyYTPlayer();
+        const placeholderEl2 = document.getElementById('pm-placeholder');
+        if (placeholderEl2) {
+          placeholderEl2.textContent = '⏸';
+          placeholderEl2.style.display = 'flex';
+        }
       }
     }, 1000);
   }
