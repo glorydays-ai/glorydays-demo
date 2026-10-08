@@ -469,6 +469,7 @@
       .preview-modal {
         background:#0f1620; border:1px solid #2a3548; border-radius:18px;
         padding:28px 32px; max-width:680px; width:95%; text-align:center;
+        position:relative; max-height:90vh; overflow-y:auto;
       }
       .preview-modal .pm-icon { font-size:3rem; margin-bottom:12px; }
       .preview-modal h3 { color:#e0e8f0; margin:0 0 10px; font-size:1.3rem; }
@@ -7798,8 +7799,9 @@
 
 
 <!-- 30-SECOND PREVIEW OVERLAY -->
-<div class="preview-overlay" id="preview-overlay">
+<div class="preview-overlay" id="preview-overlay" onclick="if(event.target===this) closePreview()">
   <div class="preview-modal">
+    <button class="pm-close" onclick="closePreview()" aria-label="Close" style="position:absolute;top:14px;right:16px;">&#10005;</button>
     <div class="pm-icon">🎬</div>
     <h3 id="preview-title">Video Title</h3>
     <p>You're watching a <strong style="color:#e8b820;">30-second free preview</strong>.<br>
