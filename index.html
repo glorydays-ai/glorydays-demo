@@ -3831,6 +3831,15 @@
         // doesn't start at raw kickoff. Update once real Jim Walden clip timing is confirmed.
         var WYO_START = { 'g1': 95, 'g2': 110, 'g3': 80, 'g4': 130 };
         function playWYOGrid(gameId, title, era) {
+          // On the deployed/hosted site, route through the same gated 30-sec
+          // preview modal used everywhere else (Join/Buy/Close UI included)
+          // — this previously built a raw Cloudflare Stream iframe with no
+          // gate at all and played the full game for free (fixed Oct 9, 2026).
+          var isLocal = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+          if (!isLocal) {
+            startPreview(title, '9.99', WYO_IDS[gameId], null, WYO_START[gameId] || 90);
+            return;
+          }
           var row = document.getElementById('wyo-player-row');
           var wrap = document.getElementById('wyo-player-wrap');
           var ptitle = document.getElementById('wyo-player-title-el');
@@ -5456,6 +5465,19 @@
         // doesn't start at raw kickoff. Update once real Jim Walden clip timing is confirmed.
         var ISU_START = { 'if3RwVDqV4I': 150, 'NfHav0jD1t0': 60 };
         function playISUGrid(ytId, title, era, badge) {
+          // On the deployed/hosted site, every YouTube-hosted clip must go
+          // through the 30-sec gated preview, same as My Locker purchases —
+          // this previously had no gate at all and played the full video
+          // (fixed Oct 10, 2026).
+          var isLocal = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+          if (!isLocal) {
+            // Note: `badge` here is a sport label ("Football"), not a player
+            // name — leave the 4th arg off so the preview's AI-HUD doesn't
+            // try to narrate "confirming Football..." and falls back to its
+            // generic scan text instead.
+            startPreview(title, '9.99', ytId);
+            return;
+          }
           var row = document.getElementById('isu-player-row');
           var wrap = document.getElementById('isu-player-wrap');
           var ptitle = document.getElementById('isu-player-title');
@@ -6915,27 +6937,60 @@
     if (div) div.innerHTML = '';
   }
 
+  // Cloudflare Stream player — parallels createYTPlayer/destroyYTPlayer above
+  // so the same gated 30-sec preview modal can also show Cloudflare-hosted
+  // clips (Wyoming), not just YouTube ones (fixed Oct 9, 2026).
+  var _cfPlayerActive = false;
+  function isCFVideoId(id) { return !!id && /^[0-9a-f]{32}$/i.test(id); }
+  function createCFPlayer(videoId, startTime) {
+    var playerDiv = document.getElementById('pm-yt-player');
+    if (!playerDiv) return;
+    playerDiv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;';
+    playerDiv.innerHTML = '<iframe style="width:100%;height:100%;border:0;" ' +
+      'src="https://iframe.cloudflarestream.com/' + videoId +
+      '?autoplay=1&muted=1&controls=1&loop=0&startTime=' + (startTime || 0) + 's" ' +
+      'allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;" allowfullscreen></iframe>';
+    _cfPlayerActive = true;
+  }
+  function destroyCFPlayer() {
+    if (!_cfPlayerActive) return;
+    var div = document.getElementById('pm-yt-player');
+    if (div) div.innerHTML = '';
+    _cfPlayerActive = false;
+  }
+  // Called everywhere the preview modal used to call destroyYTPlayer()
+  // directly — safely tears down whichever player source is active.
+  function destroyActivePlayer() {
+    destroyYTPlayer();
+    destroyCFPlayer();
+  }
+
   // ── Time-coded bounding box for Murray Walden #12 (Pullman vs Selah, t=14s onward) ──
   // [videoTime, top%, left%, width%, height%, label]
   // These positions are approximate — Murray can refine by reporting where he is
+  // Smoothed Oct 9, 2026 — previous keyframes jittered/reversed direction
+  // every 1.5-2s (e.g. left swinging 42→36→32→40 inside 6 seconds), which
+  // read as the box randomly darting away from #12. This path moves in one
+  // continuous, gentle direction (slow rightward pan + mild vertical bob)
+  // with no step larger than ~3% between consecutive keyframes.
   var _murrayBoxes = [
-    [14.0, 8,  38, 14, 32, '✅ #12 Murray — #12 detected'],
-    [15.5, 10, 35, 14, 33, '🔒 Re-ID: tracking by appearance'],
-    [17.0, 14, 31, 13, 31, '🔒 Re-ID: #12 turned — tracking'],
-    [18.5, 18, 28, 14, 33, '🔒 Re-ID: maintaining lock'],
-    [20.0, 22, 33, 13, 30, '✅ #12 re-confirmed'],
-    [22.0, 19, 38, 14, 32, '🔒 Re-ID: tracking'],
-    [24.0, 15, 42, 13, 31, '🔒 Re-ID: tracking'],
-    [26.0, 12, 36, 14, 33, '✅ #12 visible — confirmed'],
-    [28.0,  9, 32, 15, 34, '🔒 Re-ID: tracking by appearance'],
-    [30.0, 16, 40, 13, 30, '✅ #12 re-confirmed'],
-    [32.0, 20, 35, 14, 32, '🔒 Re-ID: tracking'],
-    [34.0, 14, 30, 15, 33, '🔒 Re-ID: tracking'],
-    [36.0, 10, 38, 14, 32, '✅ #12 confirmed'],
-    [38.0,  8, 42, 13, 31, '🔒 Re-ID: tracking'],
-    [40.0, 13, 36, 14, 33, '✅ #12 detected'],
-    [42.0, 18, 32, 13, 30, '🔒 Re-ID: tracking'],
-    [44.0,  9, 35, 14, 32, '✅ #12 re-confirmed'],
+    [14.0, 13,  30, 14, 33, '✅ #12 Murray — #12 detected'],
+    [15.5, 15,  30, 14, 33, '🔒 Re-ID: tracking by appearance'],
+    [17.0, 16,  31, 13, 33, '🔒 Re-ID: #12 turned — tracking'],
+    [18.5, 16,  32, 13, 32, '🔒 Re-ID: maintaining lock'],
+    [20.0, 15,  32, 13, 31, '✅ #12 re-confirmed'],
+    [22.0, 13,  33, 14, 31, '🔒 Re-ID: tracking'],
+    [24.0, 11,  33, 14, 32, '🔒 Re-ID: tracking'],
+    [26.0, 10,  34, 14, 33, '✅ #12 visible — confirmed'],
+    [28.0, 11,  35, 13, 33, '🔒 Re-ID: tracking by appearance'],
+    [30.0, 13,  35, 13, 32, '✅ #12 re-confirmed'],
+    [32.0, 15,  36, 14, 31, '🔒 Re-ID: tracking'],
+    [34.0, 16,  37, 14, 31, '🔒 Re-ID: tracking'],
+    [36.0, 15,  37, 14, 32, '✅ #12 confirmed'],
+    [38.0, 13,  38, 13, 33, '🔒 Re-ID: tracking'],
+    [40.0, 11,  39, 13, 33, '✅ #12 detected'],
+    [42.0, 10,  39, 14, 32, '🔒 Re-ID: tracking'],
+    [44.0, 11,  40, 14, 31, '✅ #12 re-confirmed'],
   ];
 
   function startBoxSync() {
@@ -6967,7 +7022,7 @@
     }, 200);
   }
 
-  function startPreview(title, price, videoId, playerName) {
+  function startPreview(title, price, videoId, playerName, startTime) {
     previewSeconds = 30;
     const overlay     = document.getElementById('preview-overlay');
     const timerEl     = document.getElementById('preview-timer');
@@ -6982,14 +7037,21 @@
     // here before; fixed Oct 8, 2026).
     const placeholderEl = document.getElementById('pm-placeholder');
     if (videoId) {
-      var startTime = (videoId === 'gCjr2E67DuA') ? 14 : 10;
       if (placeholderEl) placeholderEl.style.display = 'none';
-      if (typeof YT !== 'undefined' && YT.Player) {
-        createYTPlayer(videoId, startTime);
+      if (isCFVideoId(videoId)) {
+        // Cloudflare Stream source (Wyoming clips) — not a YouTube video ID,
+        // so use the Cloudflare iframe path instead of YT.Player
+        // (fixed Oct 9, 2026).
+        createCFPlayer(videoId, startTime || 0);
       } else {
-        // YouTube IFrame API script hasn't finished loading yet — create
-        // the player as soon as it's ready instead of silently failing.
-        window.onYouTubeIframeAPIReady = function() { createYTPlayer(videoId, startTime); };
+        var ytStart = (typeof startTime === 'number') ? startTime : ((videoId === 'gCjr2E67DuA') ? 14 : 10);
+        if (typeof YT !== 'undefined' && YT.Player) {
+          createYTPlayer(videoId, ytStart);
+        } else {
+          // YouTube IFrame API script hasn't finished loading yet — create
+          // the player as soon as it's ready instead of silently failing.
+          window.onYouTubeIframeAPIReady = function() { createYTPlayer(videoId, ytStart); };
+        }
       }
     } else if (placeholderEl) {
       placeholderEl.style.display = 'flex';
@@ -7072,7 +7134,8 @@
         // Actually stop playback at 0:00 (fixed Oct 8, 2026) — destroying the
         // player (not just pausing) removes its native controls too, so a
         // viewer can't just hit YouTube's own play button to keep watching.
-        destroyYTPlayer();
+        // destroyActivePlayer() also covers the Cloudflare source (fixed Oct 9, 2026).
+        destroyActivePlayer();
         const placeholderEl2 = document.getElementById('pm-placeholder');
         if (placeholderEl2) {
           placeholderEl2.textContent = '⏸';
@@ -7085,7 +7148,7 @@
   function closePreview() {
     if (previewInterval) clearInterval(previewInterval);
     if (window._gloryTrackInterval) clearInterval(window._gloryTrackInterval);
-    destroyYTPlayer();
+    destroyActivePlayer();
     const placeholderEl = document.getElementById('pm-placeholder');
     if (placeholderEl) placeholderEl.style.display = 'flex';
     var bbEl2 = document.getElementById('pm-bounding-box');
@@ -13620,6 +13683,22 @@ Get alerted when your name appears in a video — or upload your own. https://be
     }
     panel.style.display = 'block';
   };
+
+  // Close the AI search results dropdown on outside click or Escape — it
+  // previously only closed when you clicked a result, trapping anyone who
+  // just wanted to dismiss the list (fixed Oct 10, 2026).
+  document.addEventListener('click', function(e) {
+    var panel = document.getElementById('main-ai-results');
+    var searchBox = document.getElementById('main-search');
+    if (!panel || panel.style.display === 'none') return;
+    if (panel.contains(e.target) || e.target === searchBox) return;
+    panel.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Escape') return;
+    var panel = document.getElementById('main-ai-results');
+    if (panel) panel.style.display = 'none';
+  });
 
   function handleNameAlertSubmit() {
     var nameEl = document.getElementById('ac-name');
