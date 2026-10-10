@@ -6412,7 +6412,16 @@
         .phs-player-close:hover { border-color:#003087; color:#fff; }
       </style>
       <script>
-        function playPHSVideo(ytId) {
+        function playPHSVideo(ytId, title, playerName) {
+          // On the deployed/hosted site, route through the gated 30-sec
+          // preview modal — this card played the full video with zero gate,
+          // right next to a properly-gated card for the SAME video
+          // (fixed Oct 10, 2026).
+          var isLocal = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+          if (!isLocal) {
+            startPreview(title || 'Pullman HS Football', '9.99', ytId, playerName);
+            return;
+          }
           var row = document.getElementById('phs-player-row');
           var wrap = document.getElementById('phs-player-wrap');
           document.querySelectorAll('.phs-yt-card').forEach(function(c){ c.classList.remove('playing'); });
@@ -6444,7 +6453,7 @@
       <div class="archive-grid" id="phs-archive">
 
         <!-- Featured YouTube card — Pullman vs Selah 1985 -->
-        <div class="phs-yt-card" id="phsvc-gCjr2E67DuA" onclick="playPHSVideo('gCjr2E67DuA')">
+        <div class="phs-yt-card" id="phsvc-gCjr2E67DuA" onclick="playPHSVideo('gCjr2E67DuA','Pullman HS — Murray Walden First Handoff, 1985','Murray Walden — RB #12')">
           <div class="phs-yt-thumb">
             <img src="https://img.youtube.com/vi/gCjr2E67DuA/hqdefault.jpg" alt="Pullman vs Selah 1985" onerror="this.style.display='none';" />
             <div class="phs-this-is-me">⚡ This Is Me</div>
