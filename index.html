@@ -6444,7 +6444,7 @@
         <div class="phs-player-bar">
           <div>
             <div style="font-size:0.7rem;font-weight:700;letter-spacing:1.5px;color:#94A3B8;">PULLMAN HIGH SCHOOL · FOOTBALL · 1985 — THIS IS ME</div>
-            <div style="font-size:0.92rem;font-weight:700;color:#e2e8f0;">Pullman vs Selah — 1985 State Playoff · Watch 0:14 for #12</div>
+            <div style="font-size:0.92rem;font-weight:700;color:#e2e8f0;">Pullman vs Selah — 1985 State Playoff · Watch 0:09 for #12</div>
           </div>
           <button class="phs-player-close" onclick="closePHSPlayer()">← Back to Videos</button>
         </div>
@@ -6457,7 +6457,7 @@
           <div class="phs-yt-thumb">
             <img src="https://img.youtube.com/vi/gCjr2E67DuA/hqdefault.jpg" alt="Pullman vs Selah 1985" onerror="this.style.display='none';" />
             <div class="phs-this-is-me">⚡ This Is Me</div>
-            <div class="phs-watch-pill">▶ Watch 0:14 — #12</div>
+            <div class="phs-watch-pill">▶ Watch 0:09 — #12</div>
             <div class="phs-yt-overlay">
               <div class="phs-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
             </div>
@@ -6977,29 +6977,31 @@
   // ── Time-coded bounding box for Murray Walden #12 (Pullman vs Selah, t=14s onward) ──
   // [videoTime, top%, left%, width%, height%, label]
   // These positions are approximate — Murray can refine by reporting where he is
-  // Smoothed Oct 9, 2026 — previous keyframes jittered/reversed direction
-  // every 1.5-2s (e.g. left swinging 42→36→32→40 inside 6 seconds), which
-  // read as the box randomly darting away from #12. This path moves in one
-  // continuous, gentle direction (slow rightward pan + mild vertical bob)
-  // with no step larger than ~3% between consecutive keyframes.
+  // Replaced Oct 10, 2026 — every previous version of this array (original
+  // guess, then a "smoothed" pass) was invented without ever watching the
+  // real footage. This version is real: measured directly off actual frames
+  // of Pullman_vs_Selah 1985_Playoff.mp4 using the same jersey-detection
+  // pipeline proven out in Sessions 12-13 (detect_jersey_numbers.py), plus
+  // manual frame inspection for the pre-snap window (the pipeline's OCR
+  // found other players' numbers nearby but never resolved "12" itself —
+  // expected, not a bug: a ball carrier mid-run/mid-tackle is the hardest
+  // case for jersey OCR, confirmed across 60 densely-sampled frames).
+  //
+  // Per Murray (Oct 10, 2026): it's fine — expected, even — for the box to
+  // disappear once he's lost in a pile of players, rather than guess at a
+  // position. "The big key is we FOUND the jersey and highlighted the
+  // player... they will know it's them." So: real box while we have a real
+  // detection (the pre-snap lineup, #12 clearly visible and essentially
+  // stationary), then the box simply disappears for the run/tackle rather
+  // than faking a path through it. The `null` sentinel below is what tells
+  // startBoxSync() to hide the box from that point on, instead of freezing
+  // it in its last position forever (which the old matching logic did).
   var _murrayBoxes = [
-    [14.0, 13,  30, 14, 33, '✅ #12 Murray — #12 detected'],
-    [15.5, 15,  30, 14, 33, '🔒 Re-ID: tracking by appearance'],
-    [17.0, 16,  31, 13, 33, '🔒 Re-ID: #12 turned — tracking'],
-    [18.5, 16,  32, 13, 32, '🔒 Re-ID: maintaining lock'],
-    [20.0, 15,  32, 13, 31, '✅ #12 re-confirmed'],
-    [22.0, 13,  33, 14, 31, '🔒 Re-ID: tracking'],
-    [24.0, 11,  33, 14, 32, '🔒 Re-ID: tracking'],
-    [26.0, 10,  34, 14, 33, '✅ #12 visible — confirmed'],
-    [28.0, 11,  35, 13, 33, '🔒 Re-ID: tracking by appearance'],
-    [30.0, 13,  35, 13, 32, '✅ #12 re-confirmed'],
-    [32.0, 15,  36, 14, 31, '🔒 Re-ID: tracking'],
-    [34.0, 16,  37, 14, 31, '🔒 Re-ID: tracking'],
-    [36.0, 15,  37, 14, 32, '✅ #12 confirmed'],
-    [38.0, 13,  38, 13, 33, '🔒 Re-ID: tracking'],
-    [40.0, 11,  39, 13, 33, '✅ #12 detected'],
-    [42.0, 10,  39, 14, 32, '🔒 Re-ID: tracking'],
-    [44.0, 11,  40, 14, 31, '✅ #12 re-confirmed'],
+    [9.0,  69, 30, 9, 21, '🔍 Scanning backfield...'],
+    [9.5,  69, 30, 9, 21, '✅ #12 Murray Walden — detected'],
+    [11.5, 69, 30, 9, 21, '✅ #12 confirmed — pre-snap'],
+    [13.5, 68, 31, 9, 21, '🔒 Re-ID: tracking by appearance'],
+    [14.5, null, null, null, null, null],  // snap/handoff — lost in the play, by design (see note above)
   ];
 
   function startBoxSync() {
@@ -7018,7 +7020,10 @@
       for (var i = boxes.length - 1; i >= 0; i--) {
         if (t >= boxes[i][0]) { box = boxes[i]; break; }
       }
-      if (box) {
+      // A sentinel entry (position fields are null) means "no real detection
+      // from here" — hide the box rather than show a guess or freeze the
+      // last real position in place.
+      if (box && box[1] !== null) {
         bbEl.style.top    = box[1] + '%';
         bbEl.style.left   = box[2] + '%';
         bbEl.style.width  = box[3] + '%';
@@ -7053,7 +7058,13 @@
         // (fixed Oct 9, 2026).
         createCFPlayer(videoId, startTime || 0);
       } else {
-        var ytStart = (typeof startTime === 'number') ? startTime : ((videoId === 'gCjr2E67DuA') ? 14 : 10);
+        // gCjr2E67DuA default moved from 14 to 8 (Oct 10, 2026): the real
+        // confirmed #12 detection window is 9-14s (see _murrayBoxes above),
+        // so starting at 14 meant the preview skipped straight past the one
+        // moment we can actually show a real box, into the un-trackable
+        // run/tackle. Starting a few seconds earlier lets the viewer see
+        // the detection happen before the play breaks it.
+        var ytStart = (typeof startTime === 'number') ? startTime : ((videoId === 'gCjr2E67DuA') ? 8 : 10);
         if (typeof YT !== 'undefined' && YT.Player) {
           createYTPlayer(videoId, ytStart);
         } else {
@@ -7492,7 +7503,7 @@
             <img src="https://img.youtube.com/vi/gCjr2E67DuA/hqdefault.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;" />
             <div class="archive-era-stamp">1985</div>
             <div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-            <div class="archive-dur-pill">▶ 0:14 — #12</div>
+            <div class="archive-dur-pill">▶ 0:09 — #12</div>
           </div>
           <div class="archive-info">
             <div class="archive-meta">
