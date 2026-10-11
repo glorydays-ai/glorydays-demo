@@ -7493,6 +7493,8 @@
 
   </script>
 
+</div><!-- /phs -->
+
 <!-- ══════════════════════════════════════════════════════════ MY LOCKER PAGE -->
 <div id="locker" class="locker-page">
 
@@ -13549,14 +13551,9 @@
     var link = 'https://beta.glorydays.ai/preview/' + encodeURIComponent(currentShareTitle.replace(/\s+/g,'-').toLowerCase());
     var msg;
     if (type === 'facebook') {
-      msg = '🏆 "' + currentShareTitle + '" is on GloryDays!
-
-▶ Free 30-sec preview: ' + link + '
-
-Get alerted when a video with your name appears — or upload your own to share. 👉 https://beta.glorydays.ai';
+      msg = '🏆 "' + currentShareTitle + '" is on GloryDays!\n\n▶ Free 30-sec preview: ' + link + '\n\nGet alerted when a video with your name appears — or upload your own to share. 👉 https://beta.glorydays.ai';
     } else {
-      msg = '🏆 "' + currentShareTitle + '" — free 30-sec preview: ' + link + '
-Get alerted when your name appears in a video — or upload your own. https://beta.glorydays.ai 🔔';
+      msg = '🏆 "' + currentShareTitle + '" — free 30-sec preview: ' + link + '\nGet alerted when your name appears in a video — or upload your own. https://beta.glorydays.ai 🔔';
     }
     if (navigator.clipboard) {
       navigator.clipboard.writeText(msg).then(function() { alert('Message copied! Paste it into Facebook, Instagram, WhatsApp, or your group chat.'); });
