@@ -287,6 +287,13 @@
 
       /* Saved videos in locker */
       .locker-saved-grid { display:flex; flex-direction:column; gap:12px; }
+      /* AI Search Results page reuses .locker-saved-grid's card styling, but
+         with many clips across schools a vertical list of full-width cards
+         is hard to scan — use a dense grid instead (Oct 2026 polish). */
+      #sr-results-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+      @media(max-width:900px){ #sr-results-grid { grid-template-columns:repeat(3,1fr); } }
+      @media(max-width:720px){ #sr-results-grid { grid-template-columns:repeat(2,1fr); gap:10px; } }
+      @media(max-width:440px){ #sr-results-grid { grid-template-columns:1fr; } }
       .locker-empty { text-align:center; padding:60px 20px; color:#4a6655; }
       .locker-empty .empty-icon { font-size:3rem; margin-bottom:12px; }
       .locker-empty p { font-size:1rem; }
@@ -7963,7 +7970,7 @@
 
     <!-- AI PLAYER HIGHLIGHT BADGE (shown when jersey # registered) -->
     <div class="pm-highlight-badge" id="pm-highlight-badge">
-      🟢 AI Player Highlight Active &nbsp;<span>Your jersey number was detected in this clip</span>
+      🟢 AI Player Highlight Active &nbsp;<span>You were identified by jersey number, face &amp; voice recognition</span>
     </div>
 
     <!-- VIDEO FRAME WITH REAL EMBED + AI BOUNDING BOX -->
