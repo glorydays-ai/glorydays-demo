@@ -6698,7 +6698,7 @@
     });
     // Show school tabs only when on a school page
     const schoolTabsEl = document.getElementById('school-tabs-bar');
-    if (schoolTabsEl) schoolTabsEl.style.display = (page === 'locker' || page === 'partners' || page === 'home' || page === 'platform-page' || page === 'gd-tv' || page === 'find-me') ? 'none' : 'flex';
+    if (schoolTabsEl) schoolTabsEl.style.display = (page === 'locker' || page === 'partners' || page === 'home' || page === 'platform-page' || page === 'gd-tv' || page === 'find-me' || page === 'search-results') ? 'none' : 'flex';
     if (!skipHistory) history.pushState({view:'page', page:page}, '', page === 'home' ? location.pathname : '#' + page);
     window.scrollTo(0,0);
   }
