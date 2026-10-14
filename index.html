@@ -6755,7 +6755,14 @@
   window.addEventListener('popstate', function(e) {
     if (e.state) {
       if (e.state.view === 'school') showSchool(e.state.school, true);
-      else if (e.state.view === 'page') showPage(e.state.page, true);
+      else if (e.state.view === 'page') {
+        // Search-results is one shared div whose content is rebuilt per search —
+        // restore the right person's clips before revealing the page.
+        if (e.state.page === 'search-results' && e.state.key && typeof renderSearchResultsPage === 'function') {
+          renderSearchResultsPage(e.state.key);
+        }
+        showPage(e.state.page, true);
+      }
     } else {
       showPage('home', true);
     }
@@ -7496,6 +7503,34 @@
 </div><!-- /phs -->
 
 <!-- ══════════════════════════════════════════════════════════ MY LOCKER PAGE -->
+<!-- ═══════════════════════════════════════════════════════════ AI SEARCH RESULTS PAGE -->
+<!-- Cross-school aggregated results for a searched name (Jim Walden, etc.) — styled like
+     My Locker, but every clip is still a 30-second gated preview until purchased/saved.
+     Closing any clip opened from here (or from the quick search dropdown) always returns
+     to this page, instead of dropping the viewer on whichever single school hosted the
+     clip that happened to be clicked (fixed Oct 2026 — multi-school search UX). -->
+<div id="search-results" class="locker-page">
+
+  <div class="locker-hero">
+    <div class="locker-hero-top">
+      <div class="locker-avatar">🤖</div>
+      <div class="locker-member-info">
+        <h2 id="sr-name">—</h2>
+        <p id="sr-subtitle">AI Search Results</p>
+        <span class="member-badge" id="sr-badge">⭐ Identified by jersey number, face &amp; voice</span>
+      </div>
+      <div style="margin-left:auto; display:flex; gap:20px; align-items:center;">
+        <a href="#" onclick="showPage('home');return false;" style="color:#3a5a7a;font-size:0.85rem;text-decoration:none;">← Back to Home</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="locker-body">
+    <div class="locker-saved-grid" id="sr-results-grid"></div>
+  </div>
+
+</div><!-- /search-results -->
+
 <div id="locker" class="locker-page">
 
   <!-- Hero / Member Header -->
@@ -11176,15 +11211,77 @@
     return null;
   }
 
-  function gdPlayEntry(key, idx) {
+  // Builds and shows the aggregated cross-school results page for a searched name,
+  // and records it in history so Back restores it (with its content) rather than
+  // whatever single school page a clip happened to be tagged to.
+  function renderSearchResultsPage(key) {
+    var rec = GD_PLAYER_INDEX[key];
+    var grid = document.getElementById('sr-results-grid');
+    if (!rec || !grid) return;
+    window._gdActiveSearchKey = key;
+
+    var schools = {};
+    rec.entries.forEach(function(e){ schools[e.school] = true; });
+    var schoolCount = Object.keys(schools).length;
+
+    var nameEl = document.getElementById('sr-name');
+    var subEl = document.getElementById('sr-subtitle');
+    if (nameEl) nameEl.textContent = rec.display;
+    if (subEl) {
+      subEl.textContent = '🤖 AI found ' + rec.entries.length + ' clip' + (rec.entries.length > 1 ? 's' : '') +
+        ' across ' + schoolCount + ' school' + (schoolCount > 1 ? 's' : '');
+    }
+
+    grid.innerHTML = rec.entries.map(function(e, idx) {
+      var color = schoolColors[e.school] || '#2F6F68';
+      var schoolName = GD_SCHOOL_LABELS[e.school] || e.school;
+      return '<div class="archive-card" data-tags="' + (schoolName + ' ' + e.role).toLowerCase() + '">' +
+          '<div class="archive-thumb" style="background:linear-gradient(135deg,' + color + '33,' + color + '77);">🏈' +
+            '<div class="archive-play"><div class="archive-play-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>' +
+          '</div>' +
+          '<div class="archive-info">' +
+            '<div class="archive-meta">' +
+              '<span class="archive-tag" style="background:' + color + ';color:#fff;">' + schoolName.toUpperCase() + '</span>' +
+              '<span class="archive-tag" style="background:#1e2535;color:#b0b8c0;">' + e.role + '</span>' +
+            '</div>' +
+            '<div class="archive-title">' + e.label + '</div>' +
+            '<div class="archive-sub">' + rec.display + ' \u00B7 ' + e.role + ' \u00B7 ' + schoolName + '</div>' +
+            '<button class="preview-btn" onclick="gdPlaySearchEntry(\'' + key + '\',' + idx + ');event.stopPropagation();">\u25B6 30-sec Preview</button>' +
+          '</div>' +
+          '<div class="archive-card-right">' +
+            '<button class="locker-btn" onclick="toggleLocker(this)">&#x1F512; Save to My Locker</button>' +
+          '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  function openSearchResultsPage(key, skipHistory) {
+    renderSearchResultsPage(key);
+    showPage('search-results', skipHistory);
+    if (!skipHistory) {
+      // showPage() already pushed a generic {view:'page', page:'search-results'} state —
+      // replace it with one that remembers which person it is, for Back/Forward.
+      history.replaceState({view:'page', page:'search-results', key:key}, '', '#search-results');
+    }
+  }
+
+  // Open (or reuse) the aggregated results page, then play the chosen clip on top of it.
+  // Because the page underneath is now always this aggregated view — never a single
+  // school's page — closing the clip (X) always lands back here, regardless of which
+  // school the clip itself belongs to.
+  function gdPlaySearchEntry(key, idx) {
     var rec = GD_PLAYER_INDEX[key];
     if (!rec) return;
     var entry = rec.entries[idx];
     if (!entry) return;
+    openSearchResultsPage(key);
+    entry.play();
+  }
+
+  function gdPlayEntry(key, idx) {
     var mainPanel = document.getElementById('main-ai-results');
     if (mainPanel) mainPanel.style.display = 'none';
-    showSchool(entry.school);
-    setTimeout(function(){ entry.play(); }, 60);
+    gdPlaySearchEntry(key, idx);
   }
 
   // Builds the "AI found <name> in N clips" panel HTML. entries defaults to
@@ -11198,8 +11295,13 @@
         '<span class="gd-result-sub">' + (GD_SCHOOL_LABELS[e.school] || e.school) + ' · ' + e.role + '</span></div>' +
         '<span class="gd-result-play">▶ Watch</span></div>';
     }).join('');
+    var seeAllHtml = (rec.entries.length > 1) ?
+      '<div class="gd-result-row" style="justify-content:center;background:transparent;border-style:dashed;" onclick="openSearchResultsPage(\'' + key + '\')">' +
+        '<span class="gd-result-title" style="color:#52b4de;">\uD83D\uDD0E See all ' + rec.entries.length + ' clips for ' + rec.display + '</span>' +
+      '</div>' : '';
     return '<div class="gd-result-header">🤖 AI found ' + rec.display + ' in ' + list.length + ' clip' + (list.length > 1 ? 's' : '') + '</div>' +
       rowsHtml +
+      seeAllHtml +
       '<p class="gd-result-note">Tap any clip to watch — identified by jersey number, face, and announcer voice across the archive.</p>';
   }
 
