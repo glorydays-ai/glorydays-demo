@@ -11318,6 +11318,46 @@
   }
 
   // Global nav search ("Search teams, games...") — real AI player lookup.
+  // School-name fallback for the main search — mirrors the beta platform fix:
+  // typing a school name (e.g. "iowa state") with no player match previously
+  // just showed "No AI match yet". Now it opens that school's archive page.
+  var GD_SCHOOL_INDEX = {
+    wsu: { name: 'Washington State University', mascot: 'Cougars', aliases: ['washington state', 'wazzu', 'cougs'] },
+    isu: { name: 'Iowa State University', mascot: 'Cyclones', aliases: ['iowa state'] },
+    unl: { name: 'University of Nebraska', mascot: 'Cornhuskers', aliases: ['nebraska', 'huskers'] },
+    phs: { name: 'Pullman High School', mascot: 'Greyhounds', aliases: ['pullman'] },
+    wyo: { name: 'University of Wyoming', mascot: 'Cowboys', aliases: ['wyoming'] },
+    nd:  { name: 'University of Notre Dame', mascot: 'Fighting Irish', aliases: ['notre dame', 'irish'] },
+    gon: { name: 'Gonzaga University', mascot: 'Bulldogs', aliases: ['gonzaga', 'zags'] },
+    lsu: { name: 'Louisiana State University', mascot: 'Tigers', aliases: ['louisiana state', 'lsu tigers'] },
+    ucl: { name: 'University of California, Los Angeles', mascot: 'Bruins', aliases: ['ucla'] },
+    uw:  { name: 'University of Washington', mascot: 'Huskies', aliases: ['washington huskies'] },
+    tex: { name: 'University of Texas at Austin', mascot: 'Longhorns', aliases: ['texas', 'longhorns'] },
+    uid: { name: 'University of Idaho', mascot: 'Vandals', aliases: ['idaho', 'vandals'] }
+  };
+
+  function gdFindSchoolKey(rawQuery) {
+    var q = (rawQuery || '').toLowerCase().trim().replace(/\s+/g, ' ');
+    if (!q || q.length < 3) return null;
+    var best = null, bestLen = 0, tie = false;
+    Object.keys(GD_SCHOOL_INDEX).forEach(function(id) {
+      var rec = GD_SCHOOL_INDEX[id];
+      var matched = false, matchedLen = 0;
+      if (q === id) { matched = true; matchedLen = Math.max(matchedLen, id.length); }
+      [rec.name.toLowerCase(), rec.mascot.toLowerCase()].concat(rec.aliases || []).forEach(function(term) {
+        if (term && (term === q || term.indexOf(q) !== -1 || q.indexOf(term) !== -1)) {
+          matched = true;
+          if (term.length > matchedLen) matchedLen = term.length;
+        }
+      });
+      if (matched) {
+        if (matchedLen > bestLen) { best = id; bestLen = matchedLen; tie = false; }
+        else if (matchedLen === bestLen && id !== best) { tie = true; }
+      }
+    });
+    return tie ? null : best;
+  }
+
   window.performSearch = function(q) {
     var panel = document.getElementById('main-ai-results');
     if (!panel) return;
@@ -11325,9 +11365,16 @@
     var rec = key ? GD_PLAYER_INDEX[key] : null;
     if (rec) {
       panel.innerHTML = gdResultRowsHtml(key, rec);
-    } else {
-      panel.innerHTML = '<p class="gd-result-note" style="margin-top:0;">No AI match yet for "' + q + '". Try Jim Walden, Timm Rosenbach, Murray Walden, or Ryan Leaf.</p>';
+      panel.style.display = 'block';
+      return;
     }
+    var schoolId = gdFindSchoolKey(q);
+    if (schoolId) {
+      panel.style.display = 'none';
+      if (typeof showSchool === 'function') showSchool(schoolId);
+      return;
+    }
+    panel.innerHTML = '<p class="gd-result-note" style="margin-top:0;">No AI match yet for "' + q + '". Try Jim Walden, Timm Rosenbach, Murray Walden, or Ryan Leaf.</p>';
     panel.style.display = 'block';
   };
 
